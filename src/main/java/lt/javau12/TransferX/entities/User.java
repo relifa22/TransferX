@@ -62,6 +62,32 @@ public class User {
 
     }
 
+    public User(String name,
+                String lastName,
+                String email,
+                String password,
+                LocalDate birthDate,
+                String personalIdentificationNumber,
+                String documentNumber,
+                BigDecimal monthlyIncome,
+                IncomeType incomeType,
+                String country,
+                String city,
+                String address) {
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.personalIdentificationNumber = personalIdentificationNumber;
+        this.documentNumber = documentNumber;
+        this.monthlyIncome = monthlyIncome;
+        this.incomeType = incomeType;
+        this.country = country;
+        this.city = city;
+        this.address = address;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

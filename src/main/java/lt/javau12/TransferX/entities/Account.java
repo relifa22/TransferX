@@ -29,7 +29,7 @@ public class Account {
     private BigDecimal monthlyTransferLimit;
 
     @Enumerated(EnumType.STRING)
-    private CurrencyType currency;
+    private CurrencyType currencyType;
 
     private boolean isActive;
 
@@ -49,6 +49,12 @@ public class Account {
     public Account(){
 
     }
+
+    public Account(AccountType accountType, CurrencyType currencyType) {
+        this.accountType = accountType;
+        this.currencyType = currencyType;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -103,12 +109,12 @@ public class Account {
         this.monthlyTransferLimit = monthlyTransferLimit;
     }
 
-    public CurrencyType getCurrency() {
-        return currency;
+    public CurrencyType getCurrencyType() {
+        return currencyType;
     }
 
-    public void setCurrency(CurrencyType currency) {
-        this.currency = currency;
+    public void setCurrencyType(CurrencyType currencyType) {
+        this.currencyType = currencyType;
     }
 
     public boolean isActive() {

@@ -1,13 +1,16 @@
 package lt.javau12.TransferX.DTO;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lt.javau12.TransferX.enums.UserType;
 
 
 
 public class UserDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+
     private String name;
     private String lastName;
     private String email;

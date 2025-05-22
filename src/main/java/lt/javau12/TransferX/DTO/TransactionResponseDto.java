@@ -1,14 +1,25 @@
 package lt.javau12.TransferX.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class TransactionResponseDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer number;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime timestamp;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String fullName;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String description;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal amount;
 
     public TransactionResponseDto(){

@@ -1,19 +1,31 @@
 package lt.javau12.TransferX.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lt.javau12.TransferX.enums.CardBrand;
 import lt.javau12.TransferX.enums.CardType;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 public class CardResponseDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CardType cardType;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CardBrand cardBrand;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String maskedCardNumber;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate expirationDate;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean isActive;
 
    public CardResponseDto(){

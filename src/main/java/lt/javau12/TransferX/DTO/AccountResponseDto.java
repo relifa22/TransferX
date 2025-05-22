@@ -1,5 +1,6 @@
 package lt.javau12.TransferX.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lt.javau12.TransferX.enums.AccountType;
 import lt.javau12.TransferX.enums.CurrencyType;
 
@@ -8,10 +9,19 @@ import java.math.BigDecimal;
 
 public class AccountResponseDto {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String iban;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal balance;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CurrencyType currencyType;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private AccountType accountType;
 
     public AccountResponseDto(){
