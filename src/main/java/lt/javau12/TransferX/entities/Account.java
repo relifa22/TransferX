@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-public class Account {
+public class Ac {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Account {
     private String iban;
 
     @Column(precision = 19, scale = 4)
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
     private BigDecimal dailyTransferLimit;
     private BigDecimal monthlyTransferLimit;
 
@@ -46,11 +46,11 @@ public class Account {
     @OneToMany(mappedBy = "receiverAccount")
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
-    public Account(){
+    public Ac(){
 
     }
 
-    public Account(AccountType accountType, CurrencyType currencyType) {
+    public Ac(AccountType accountType, CurrencyType currencyType) {
         this.accountType = accountType;
         this.currencyType = currencyType;
     }
