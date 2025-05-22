@@ -6,6 +6,7 @@ import lt.javau12.TransferX.enums.UserType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,8 @@ public class User {
 
     private boolean verified;
 
+    private LocalDateTime createdAt;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts = new ArrayList<>();
 
@@ -57,6 +60,11 @@ public class User {
 
     public User(){
 
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -210,4 +218,14 @@ public class User {
     public void setChildren(List<User> children) {
         this.children = children;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+
 }

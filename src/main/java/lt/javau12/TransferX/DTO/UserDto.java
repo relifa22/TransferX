@@ -1,30 +1,43 @@
 package lt.javau12.TransferX.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lt.javau12.TransferX.enums.UserType;
+
+
 
 public class UserDto {
 
-   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-   private Long id;
+    private Long id;
+    private String name;
+    private String lastName;
+    private String email;
+    private String country;
+    private String city;
+    private String address;
+    private UserType userType;
 
-   private String name;
-   private String lastname;
-   private String email;
-   private boolean verified;
-   private UserType userType;
 
-   public UserDto(){
+    public UserDto() {
+    }
 
-   }
+    public UserDto(Long id,
+                   String name,
+                   String lastName,
+                   String email,
+                   String country,
+                   String city,
+                   String address,
+                   UserType userType) {
 
-    public UserDto(Long id, String name, String lastname, String email, boolean verified, UserType userType) {
         this.id = id;
         this.name = name;
-        this.lastname = lastname;
+        this.lastName = lastName;
         this.email = email;
-        this.verified = verified;
+        this.country = country;
+        this.city = city;
+        this.address = address;
         this.userType = userType;
+
     }
 
     public Long getId() {
@@ -43,12 +56,12 @@ public class UserDto {
         this.name = name;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -59,13 +72,30 @@ public class UserDto {
         this.email = email;
     }
 
-    public boolean isVerified() {
-        return verified;
+    public String getCountry() {
+        return country;
     }
 
-    public void setVerified(boolean verified) {
-        this.verified = verified;
+    public void setCountry(String country) {
+        this.country = country;
     }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 
     public UserType getUserType() {
         return userType;
@@ -74,4 +104,6 @@ public class UserDto {
     public void setUserType(UserType userType) {
         this.userType = userType;
     }
+
+
 }

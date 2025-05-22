@@ -1,6 +1,9 @@
 package lt.javau12.TransferX.DTO;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lt.javau12.TransferX.enums.IncomeType;
 
@@ -8,23 +11,47 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class CreateUserDto {
+
+    @NotBlank(message = "First name is required")
     private String name;
+
+    @NotBlank(message = "Last name is required")
     private String lastName;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "Slaptažodis turi būti bent 8 simbolių, su didžiąja raide, skaičiumi ir specialiu simboliu"
+            message = "Password must be at least 8 characters long and include an uppercase letter, a number, and a special character"
     )
     private String password;
+
+    @NotNull(message = "Birth date is required")
     private LocalDate birthDate;
+
+    @NotBlank(message = "Personal identification number is required")
     private String personalIdentificationNumber;
+
+    @NotBlank(message = "Document number is required")
     private String documentNumber;
+
+    @NotNull(message = "Monthly income is required")
     private BigDecimal monthlyIncome;
+
+    @NotNull(message = "Income source must be specified")
     private IncomeType incomeType;
+
+    @NotBlank(message = "Country must be specified")
     private String country;
+
+    @NotBlank(message = "City must be specified")
     private String city;
+
+    @NotBlank(message = "Address must be specified")
     private String address;
+
 
     public CreateUserDto(){
 

@@ -6,6 +6,7 @@ import lt.javau12.TransferX.enums.CardType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "cards")
@@ -17,17 +18,22 @@ public class Card {
 
     @Enumerated(EnumType.STRING)
     private CardType cardType;
+
+    @Column(unique = true)
     private String cardNumber;
 
     @Enumerated(EnumType.STRING)
     private CardBrand cardBrand;
 
+    @Column(length = 3)
     private String cvv;
+
     private LocalDate expirationDate;
     private BigDecimal dailySpendingLimit;
     private BigDecimal weeklySpendingLimit;
     private BigDecimal monthlySpendingLimit;
     private boolean isActive;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "account_id")
@@ -35,6 +41,12 @@ public class Card {
 
     public Card(){
 
+    }
+
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -123,5 +135,13 @@ public class Card {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

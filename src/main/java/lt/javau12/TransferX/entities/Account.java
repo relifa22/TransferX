@@ -2,6 +2,7 @@ package lt.javau12.TransferX.entities;
 
 import jakarta.persistence.*;
 import lt.javau12.TransferX.enums.AccountType;
+import lt.javau12.TransferX.enums.CurrencyType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,13 +27,16 @@ public class Account {
     private BigDecimal balance;
     private BigDecimal dailyTransferLimit;
     private BigDecimal monthlyTransferLimit;
-    private String currency;
+
+    @Enumerated(EnumType.STRING)
+    private CurrencyType currency;
 
     private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
 
     private LocalDateTime createdAt;
 
@@ -99,11 +103,11 @@ public class Account {
         this.monthlyTransferLimit = monthlyTransferLimit;
     }
 
-    public String getCurrency() {
+    public CurrencyType getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyType currency) {
         this.currency = currency;
     }
 

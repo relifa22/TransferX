@@ -16,7 +16,11 @@ public class Transaction {
 
     private BigDecimal amount;
     private LocalDateTime timestamp;
+
+    @Column(length = 500)
     private String description;
+
+    @Column(unique = true)
     private String transactionNumber;
 
     @Enumerated(EnumType.STRING)
