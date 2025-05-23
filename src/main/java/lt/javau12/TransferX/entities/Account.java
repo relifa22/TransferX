@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "accounts")
-public class Ac {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,11 +46,11 @@ public class Ac {
     @OneToMany(mappedBy = "receiverAccount")
     private List<Transaction> receivedTransactions = new ArrayList<>();
 
-    public Ac(){
+    public Account(){
 
     }
 
-    public Ac(AccountType accountType, CurrencyType currencyType) {
+    public Account(AccountType accountType, CurrencyType currencyType) {
         this.accountType = accountType;
         this.currencyType = currencyType;
     }
