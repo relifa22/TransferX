@@ -4,7 +4,8 @@ import lt.javau12.TransferX.DTO.CardResponseDto;
 import lt.javau12.TransferX.DTO.CreateCardDto;
 import lt.javau12.TransferX.entities.Account;
 import lt.javau12.TransferX.entities.Card;
-import lt.javau12.TransferX.formatters.CardNumberFormatter;
+import lt.javau12.TransferX.enums.CardBrand;
+import lt.javau12.TransferX.enums.CardType;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,36 +14,34 @@ import java.time.LocalDate;
 @Component
 public class CardMapper {
 
-    private final CardNumberFormatter cardNumberFormatter;
-
-    public CardMapper(CardNumberFormatter cardNumberFormatter) {
-        this.cardNumberFormatter = cardNumberFormatter;
-    }
 
     public CardResponseDto toDto(Card cardEntity){
         return new CardResponseDto(
                 cardEntity.getId(),
                 cardEntity.getCardType(),
                 cardEntity.getCardBrand(),
-                cardNumberFormatter.maskCardNumber(cardEntity.getCardNumber()),
+                cardEntity.getCardNumber(),
                 cardEntity.getExpirationDate(),
                 cardEntity.isActive()
-
 
 
         );
     }
 
-    public Card toEntity(CreateCardDto createCardDto, Account account,
-                         String cardNumber, String cvv,
+    public Card toEntity(CreateCardDto createCardDto,
+                         Account account,
+                         CardType cardType,
+                         CardBrand cardBrand,
+                         String cardNumber,
+                         String cvv,
                          LocalDate expirationDate,
                          BigDecimal dailyLimit,
                          BigDecimal weeklyLimit,
                          BigDecimal monthlyLimit) {
 
         Card card = new Card();
-        card.setCardType(createCardDto.getCardType());
-        card.setCardBrand(createCardDto.getCardBrand());
+        card.setCardType(cardType);
+        card.setCardBrand(cardBrand);
         card.setAccount(account);
         card.setCardNumber(cardNumber);
         card.setCvv(cvv);

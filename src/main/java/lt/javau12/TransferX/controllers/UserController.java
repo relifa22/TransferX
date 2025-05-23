@@ -20,22 +20,26 @@ public class UserController {
         this.userService = userService;
     }
 
+    //userio kurimas
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserDto createUserDto){
         UserDto created = userService.createUser(createUserDto);
         return ResponseEntity.status(201).body(created);
 
     }
-
+    //visi useriai
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(){
+
         return ResponseEntity.ok(userService.getAllUsers());
     }
-
+    // useris pagal id
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
         return ResponseEntity.of(userService.getUserById(id));
 
     }
+
+
 
 }

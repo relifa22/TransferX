@@ -12,6 +12,7 @@ import lt.javau12.TransferX.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -24,25 +25,31 @@ public class AccountService {
 
     public AccountService(AccountRepository accountRepository,
                           AccountMapper accountMapper,
-                          UserRepository userRepository, IbanGenerator ibanGenerator) {
+                          UserRepository userRepository,
+                          IbanGenerator ibanGenerator) {
+
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
         this.userRepository = userRepository;
         this.ibanGenerator = ibanGenerator;
     }
 
+    // automatinis saskaitos kurimas kuriant vartotoja
     public AccountResponseDto createDefaultAccountForUser(User user){
+
+
         Account account = new Account();
         account.setUser(user);
         account.setCurrencyType(CurrencyType.EUR);
         account.setAccountType(AccountType.ADULT);
-        account.setIban(ibanGenerator.generateIban());
+        account.setIban(ibanGenerator.generateUniqueIban());
 
         Account saved = accountRepository.save(account);
         return accountMapper.toDto(saved);
 
     }
 
+    // default account pagal userId,
     public AccountResponseDto getDefaultAccountByUserId(Long userId){
         return accountRepository.findByUserId(userId).stream()
                 .filter(account -> account.getCurrencyType() == CurrencyType.EUR
@@ -51,19 +58,21 @@ public class AccountService {
                 .map(accountMapper::toDto)
                 .orElseThrow(()-> new RuntimeException("default account not found"));
     }
-
+    // visu saskaitu gavimas
     public List<AccountResponseDto> getAllAccounts(){
         return accountRepository.findAll().stream()
                 .map(accountMapper::toDto)
                 .toList();
     }
 
-    public AccountResponseDto getAccountById(Long id){
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-        return accountMapper.toDto(account);
+    //pagal saskaitos id
+    public Optional<AccountResponseDto> getAccountById(Long id){
+        return accountRepository.findById(id)
+                .map(accountMapper::toDto);
     }
-
+    // visu saskaitu gavimas
+    //pagal saskaitos id
+    // vartotojo saskaitos pagal id
     public List<AccountResponseDto> getAccountsByUserId(Long userId){
         return  accountRepository.findByUserId(userId).stream()
                 .map(accountMapper::toDto)

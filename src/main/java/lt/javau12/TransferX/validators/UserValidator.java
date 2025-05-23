@@ -9,6 +9,7 @@ import java.time.Period;
 @Component
 public class UserValidator {
 
+    //
     public boolean doesPersonalCodeMatchBirthday(String personalCode, LocalDate birthDate){
 
         if (personalCode == null
@@ -39,6 +40,7 @@ public class UserValidator {
         return age >= 18;
     }
 
+    // userio tipo nustatymas
     public UserType determineUserType(LocalDate birthDate) {
         if (birthDate == null) {
             throw new RuntimeException("BirthDate is required");
