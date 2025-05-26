@@ -4,6 +4,8 @@ import lt.javau12.TransferX.DTO.CreateUserDto;
 import lt.javau12.TransferX.DTO.UserDto;
 import lt.javau12.TransferX.entities.User;
 import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.exeptions.DuplicateEmailException;
+import lt.javau12.TransferX.exeptions.ValidationException;
 import lt.javau12.TransferX.mappers.UserMapper;
 import lt.javau12.TransferX.repositories.UserRepository;
 import lt.javau12.TransferX.validators.UserValidator;
@@ -33,18 +35,25 @@ public class UserService {
 
     // sukuriamas naujas vartotojas
     public UserDto createUser(CreateUserDto createUserDto){
+
+        if (userRepository.existsByEmail(createUserDto.getEmail())){
+            throw new DuplicateEmailException("Email already exists");
+        }
+
         User user = userMapper.toEntity(createUserDto);
         user.setPassword(createUserDto.getPassword());
 
         // tikrinam ar gimimo data ir ak sutampa
-        if (!userValidator.doesPersonalCodeMatchBirthday(user.getPersonalIdentificationNumber(),
-                user.getBirthDate())){
-            throw new RuntimeException("Personal identification number and birthDate do not match");
-
-        }
+         userValidator.doesPersonalCodeMatchBirthday(
+                 user.getPersonalIdentificationNumber(),
+                user.getBirthDate());
 
         //nustatomas vartotojo tipas pagal metus
         user.setUserType(userValidator.determineUserType(user.getBirthDate()));
+
+        if (user.getUserType() != UserType.ADULT){
+            throw new ValidationException("Only adult users can register");
+        }
 
         User savedUser = userRepository.save(user);
 

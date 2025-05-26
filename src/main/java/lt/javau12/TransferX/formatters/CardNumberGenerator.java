@@ -20,7 +20,7 @@ public class CardNumberGenerator {
         String number;
         do {
             number = generateCardNumber();
-        }while (cardRepository.existsByNumber(number));
+        }while (cardRepository.existsByCardNumber(number));
         return number;
     }
 

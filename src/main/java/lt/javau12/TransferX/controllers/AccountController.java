@@ -38,7 +38,7 @@ public class AccountController {
         return ResponseEntity.of(accountService.getAccountById(id));
    }
     // vartotojo saskaitos pagal id
-   @GetMapping("")
+   @GetMapping("/api/accounts/by-user")
     public ResponseEntity<List<AccountResponseDto>> getAllUsersAccountsByUserId(@PathVariable Long userId){
         List<AccountResponseDto> accounts = accountService.getAccountsByUserId(userId);
         return ResponseEntity.ok(accounts);

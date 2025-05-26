@@ -1,6 +1,7 @@
 package lt.javau12.TransferX.validators;
 
 import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.exeptions.ValidationException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -9,13 +10,13 @@ import java.time.Period;
 @Component
 public class UserValidator {
 
-    //
-    public boolean doesPersonalCodeMatchBirthday(String personalCode, LocalDate birthDate){
+    //tikrinama ar asmens kodas ir gimimo data sutampa
+    public void doesPersonalCodeMatchBirthday(String personalCode, LocalDate birthDate){
 
         if (personalCode == null
-                || personalCode.length() < 7
-                || birthDate == null){
-            return false;
+                || birthDate == null
+                || personalCode.length() < 7){
+            throw new ValidationException("Personal identification code or birthdate is not correct");
         }
 
         String codeYear = personalCode.substring(1, 3);
@@ -26,9 +27,11 @@ public class UserValidator {
         String birthMonth = String.format("%02d", birthDate.getMonthValue());
         String birthDay = String.format("%02d", birthDate.getDayOfMonth());
 
-        return codeYear.equals(birthYear)
+       if (!codeYear.equals(birthYear)
                 && codeMonth.equals(birthMonth)
-                && codeDate.equals(birthDay);
+                && codeDate.equals(birthDay)){
+           throw new ValidationException( "personal identification code is not equl birthdate. Please, check your inputs");
+       }
     }
 
     public boolean isAdult(LocalDate birthDate){

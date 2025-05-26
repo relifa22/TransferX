@@ -1,10 +1,7 @@
 package lt.javau12.TransferX.DTO;
 
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lt.javau12.TransferX.enums.IncomeType;
 
 import java.math.BigDecimal;
@@ -28,6 +25,7 @@ public class CreateUserDto {
     )
     private String password;
 
+    @PastOrPresent(message = "Birthdate cannot be in the future")
     @NotNull(message = "Birth date is required")
     private LocalDate birthDate;
 

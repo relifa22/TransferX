@@ -30,7 +30,7 @@ public class IbanGenerator {
         return iban;
     }
 
-    private String generateIban() {
+    public String generateIban() {
         StringBuilder accountNumber = new StringBuilder();
         for (int i = 0; i <accountNumberLength; i++){
             accountNumber.append(secureRandom.nextInt(10));
