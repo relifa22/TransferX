@@ -1,5 +1,6 @@
 package lt.javau12.TransferX.mappers;
 
+import lt.javau12.TransferX.DTO.AccountListDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
 import lt.javau12.TransferX.DTO.CreateAccountDto;
 import lt.javau12.TransferX.entities.Account;
@@ -33,6 +34,18 @@ public class AccountMapper {
                 account.getCurrencyType(),
                 account.getAccountType()
         );
+    }
+
+    public AccountListDto toListDto(Account account){
+
+        AccountListDto accountListDto = new AccountListDto();
+
+        accountListDto.setAccountId(account.getId());
+        accountListDto.setIban(account.getIban());
+        accountListDto.setCurrencyType(account.getCurrencyType());
+        accountListDto.setAccountType(account.getAccountType());
+        accountListDto.setUserId(account.getUser().getId());
+        return accountListDto;
     }
 
 

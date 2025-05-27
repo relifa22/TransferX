@@ -3,7 +3,7 @@ package lt.javau12.TransferX.DTO;
 
 import jakarta.validation.constraints.NotNull;
 import lt.javau12.TransferX.enums.CardBrand;
-import lt.javau12.TransferX.enums.CardType;
+
 
 
 public class CreateCardDto {

@@ -56,6 +56,12 @@ public class UserValidator {
         return UserType.ADULT;
     }
 
+    public void validateSelectedTypeAgainstBirthDate(UserType selectedType, LocalDate birthdate){
+        if (selectedType == UserType.ADULT && !isAdult(birthdate)){
+            throw new ValidationException("child cannot have adult account. Please check birthdate or choose other user type.");
+        }
+    }
+
 
 
 }
