@@ -1,68 +1,79 @@
-# TransferX – Banking Application
+## TransferX – Modern Banking App
 
-Moderni bankinė sistema, sukurta naudojant Java 21, Spring Boot ir React. Projektas simuliuoja pagrindines banko operacijas: naudotojų registraciją, sąskaitų valdymą, pavedimus, kortelių kūrimą ir ribojimų nustatymus.
-
-## Funkcionalumai
-
-- Naudotojų registracija ir prisijungimas
-- Automatinis sąskaitos sukūrimas registracijos metu
-- Sąskaitų peržiūra, balansai
-- Pavedimai tarp sąskaitų (vidiniai pervedimai)
-- Kortelių sukūrimas ir limitų valdymas
-- Operacijų istorija
-
-## Technologijos
-
-| Technologija       | Naudojimo tikslas                         |
-|--------------------|-------------------------------------------|
-| Java 21            | Backend logika                            |
-| Spring Boot        | REST API, validacija, priklausomybių injekcija |
-| MySQL              | Duomenų bazė                              |
-| Hibernate (JPA)    | ORM – Entity susiejimas su DB             |
-| Bean Validation    | DTO validacija su anotacijomis (@Valid)   |
-| React + Vite       | Frontend (modernus ir greitas)            |
-
-## Pradėjimas (Getting Started)
-
-1. Klonuok projektą:
-
-```
-git clone https://github.com/relifa22/TransferX.git
-```
-
-2. Importuok kaip Maven projektą į pasirinktą IDE
-
-3. Paleisk projektą:
-
-```
-./mvnw spring-boot:run
-```
-
-Backend veikia per numatytąją prievadą: [http://localhost:8080](http://localhost:8080)
-
-## API Dokumentacija
-
-_(Planuojama naudoti Swagger dokumentaciją ateityje)_
-
-### Pavyzdiniai API endpoint'ai (bus aktyvuoti paleidus projektą)
-
-- `POST /api/users` – Naujo naudotojo registracija
-- `POST /api/accounts` – Naujos sąskaitos sukūrimas
-- `POST /api/transactions` – Pavedimas tarp sąskaitų
-- `POST /api/cards` – Kortelės sukūrimas
-- `PUT /api/cards/limits` – Kortelės limitų atnaujinimas
-
-## Naudotojų tipai
-
-- **Suaugusysis** – turi visas funkcijas
-- **Vaikas / Paauglys** – gali tik gauti pinigus ir atsiskaityti (dienos limitas iki 10 €)
-
-## Darbai planuojami:
-
-- Swagger UI integracija
-- JWT autentifikacija
-- React frontend funkcionalumų pilnas sujungimas
+**TransferX** is a full-stack banking application designed to simulate real-world banking operations. Built with **Java 21**, **Spring Boot**, and **React**, the project offers secure, structured, and scalable banking functionality tailored for both adults and children.
 
 ---
 
-**Sukūrė:** Renata Vaičiūnaitė
+### Key Features
+- User registration & login (adult & child)
+- Automatic account + virtual card creation on registration
+- Internal money transfers between accounts
+- Account balance overview
+- Parental child account creation with spending limits
+- Transaction history with date filtering
+- Role-based restrictions (e.g., child: 10€/day max)
+- REST API endpoints are consistent, RESTful, and follow clear naming conventions. Swagger documentation planned for better developer experience.
+
+---
+
+### Tech Stack
+
+| Technology       | Purpose                               |
+|------------------|----------------------------------------|
+| Java 21          | Core backend logic                     |
+| Spring Boot      | REST API, validation, DI               |
+| MySQL            | Database storage                       |
+| Hibernate (JPA)  | ORM mapping for entities               |
+| Bean Validation  | Input validation via annotations       |
+| React + Vite     | Modern frontend UI                     |
+
+---
+
+### Getting Started
+
+```bash
+git clone https://github.com/relifa22/TransferX.git
+```
+
+- Import as a Maven project into your IDE  
+- Run the app:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Backend runs on: `http://localhost:8080`
+
+---
+
+### API Endpoints (examples)
+
+| Endpoint                        | Description                           |
+|----------------------------------|---------------------------------------|
+| POST `/api/users`               | Register new adult user              |
+| POST `/api/users/child`         | Register child account (via parent)  |
+| GET `/api/users/parent/{id}/child` | Get children by parent ID         |
+| POST `/api/accounts`            | Create new account                    |
+| POST `/api/transactions`        | Make a transfer                       |
+| POST `/api/cards`               | Issue a virtual card                  |
+| PATCH `/api/cards/{id}/activate`| Activate card (planned)              |
+
+---
+
+### User Types
+
+- Adult – full access to all features  
+- Child / Teen – limited usage (e.g., spending limit 10€/day)
+
+---
+
+### Coming Soon
+
+- JWT authentication
+- Swagger UI
+- Full React frontend integration
+- Exportable transaction reports
+
+---
+
+### Created by: **Renata Vaičiūnaitė**
