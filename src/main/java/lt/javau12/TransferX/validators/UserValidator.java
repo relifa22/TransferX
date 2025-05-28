@@ -27,11 +27,15 @@ public class UserValidator {
         String birthMonth = String.format("%02d", birthDate.getMonthValue());
         String birthDay = String.format("%02d", birthDate.getDayOfMonth());
 
-       if (!codeYear.equals(birthYear)
-                && codeMonth.equals(birthMonth)
-                && codeDate.equals(birthDay)){
-           throw new ValidationException( "personal identification code is not equl birthdate. Please, check your inputs");
-       }
+        System.out.println("codeYear: " + codeYear + " vs birthYear: " + birthYear);
+        System.out.println("codeMonth: " + codeMonth + " vs birthMonth: " + birthMonth);
+        System.out.println("codeDate: " + codeDate + " vs birthDay: " + birthDay);
+
+        if (!codeYear.equals(birthYear)
+                || !codeMonth.equals(birthMonth)
+                || !codeDate.equals(birthDay)) {
+            throw new ValidationException("Personal identification code does not match birth date. Please check your inputs.");
+        }
     }
 
     public boolean isAdult(LocalDate birthDate){

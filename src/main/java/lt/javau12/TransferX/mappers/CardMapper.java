@@ -1,7 +1,6 @@
 package lt.javau12.TransferX.mappers;
 
 import lt.javau12.TransferX.DTO.CardResponseDto;
-import lt.javau12.TransferX.DTO.CreateCardDto;
 import lt.javau12.TransferX.entities.Account;
 import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.enums.CardBrand;
@@ -28,8 +27,7 @@ public class CardMapper {
         );
     }
 
-    public Card toEntity(CreateCardDto createCardDto,
-                         Account account,
+    public Card toEntity(Account account,
                          CardType cardType,
                          CardBrand cardBrand,
                          String cardNumber,

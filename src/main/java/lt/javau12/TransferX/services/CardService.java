@@ -17,6 +17,7 @@ import lt.javau12.TransferX.validators.CardValidator;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -96,6 +97,29 @@ public class CardService {
                     return cardMapper.toDto(cardRepository.save(card));
                 })
                 .orElseThrow(() -> new ValidationException("Card creation allowed only for adult accounts."));
+    }
+
+    public List<CardResponseDto> getAllCard(){
+        return cardRepository.findAll().stream()
+                .map(cardMapper::toDto)
+                .toList();
+
+
+    }
+
+    public CardResponseDto getCardById(Long id){
+        Card card = cardRepository.findById(id)
+                .orElseThrow(()-> new NotFoundExeption("Card not found with id: " +id));
+        return cardMapper.toDto(card);
+    }
+
+    public boolean deleteCard(Long id){
+        return cardRepository.findById(id)
+                .map(card -> {
+                    cardRepository.delete(card);
+                    return true;
+                })
+                .orElseThrow(() -> new NotFoundExeption("Card not found by id: " + id));
     }
 
 

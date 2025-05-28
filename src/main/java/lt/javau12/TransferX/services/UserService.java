@@ -7,7 +7,9 @@ import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.entities.User;
 import lt.javau12.TransferX.enums.UserType;
 import lt.javau12.TransferX.exeptions.DuplicateEmailException;
+import lt.javau12.TransferX.exeptions.NotFoundExeption;
 import lt.javau12.TransferX.exeptions.ValidationException;
+import lt.javau12.TransferX.mappers.CardMapper;
 import lt.javau12.TransferX.mappers.ChildMapper;
 import lt.javau12.TransferX.mappers.UserMapper;
 import lt.javau12.TransferX.repositories.AccountRepository;
@@ -30,6 +32,7 @@ public class UserService {
     private final AccountRepository accountRepository;
     private final CardService cardService;
     private final CardRepository cardRepository;
+    private final CardMapper cardMapper;
 
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
@@ -37,7 +40,9 @@ public class UserService {
                        UserValidator userValidator,
                        ChildMapper childMapper,
                        AccountRepository accountRepository,
-                       CardService cardService, CardRepository cardRepository) {
+                       CardService cardService,
+                       CardRepository cardRepository,
+                       CardMapper cardMapper) {
 
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -47,6 +52,7 @@ public class UserService {
         this.accountRepository = accountRepository;
         this.cardService = cardService;
         this.cardRepository = cardRepository;
+        this.cardMapper = cardMapper;
     }
 
     // sukuriamas naujas vartotojas
@@ -81,9 +87,10 @@ public class UserService {
     }
 
     //sukuriamas child vartotojas
-    @Transactional // Užtikrina, kad jei įvyksta klaida bet kurioje šio metodo vietoje,
-                   // visi veiksmai (vartotojo, sąskaitos, kortelės kūrimas) bus atšaukti (rollback)
-    public ChildResponseDto createChilduser(CreateChildDto createChildDto){
+    //@Transactional Užtikrina, kad jei įvyksta klaida bet kurioje šio metodo vietoje,
+    // visi veiksmai (vartotojo, sąskaitos, kortelės kūrimas) bus atšaukti (rollback)
+    @Transactional
+    public ChildResponseDto createChildUser(CreateChildDto createChildDto){
 
         // susirandam teva
         User parent = userRepository.findById(createChildDto.getParentId())
@@ -96,6 +103,7 @@ public class UserService {
         );
 
         UserType actualType = userValidator.determineUserType(child.getBirthDate());
+
         child.setUserType(actualType);
         child.setParent(parent);
         child.setCountry(parent.getCountry());
@@ -129,6 +137,7 @@ public class UserService {
                 .map(userMapper::toDto)
                 .toList();
     }
+
     // vartotojas pagal id
     public Optional<UserDto> getUserById(Long id){
         return userRepository.findById(id)
@@ -145,16 +154,9 @@ public class UserService {
             List<AccountWithCardsDto> accountDtos = accounts.stream().map(account -> {
                 List<Card> cards = cardRepository.findAllByAccountId(account.getId());
 
-                List<CardResponseDto> cardDtos = cards.stream().map(card ->
-                        new CardResponseDto(
-                                card.getId(),
-                                card.getCardType(),
-                                card.getCardBrand(),
-                                card.getCardNumber(),
-                                card.getExpirationDate(),
-                                card.isActive()
-                        )
-                ).toList();
+                List<CardResponseDto> cardDtos = cards.stream()
+                        .map(cardMapper::toDto)
+                        .toList();
 
                 return new AccountWithCardsDto(account.getIban(), cardDtos);
             }).toList();
@@ -184,6 +186,30 @@ public class UserService {
                 )
                 .orElse(false);
     }
+
+    // istrinam suaugusi
+    public boolean deleteAdultByid(Long id){
+        return userRepository.findById(id)
+                .map(user -> {
+                    if (user.getUserType() != UserType.ADULT) {
+                        throw new ValidationException("Only adult users can be deleted via this endpoint.");
+                    }
+
+                    List<User> children = userRepository.findAllByParentId(user.getId());
+                    if (!children.isEmpty()) {
+                        throw new ValidationException("Cannot delete user: child account(s) still exist. Please remove them first.");
+                    }
+
+                    List<Account> accounts = accountRepository.findByUserId(user.getId());
+                    accountRepository.deleteAll(accounts);
+                    userRepository.delete(user);
+                    return true;
+                })
+
+                .orElseThrow(()-> new NotFoundExeption("User not found by id: " + id));
+    }
+
+
 
 
 

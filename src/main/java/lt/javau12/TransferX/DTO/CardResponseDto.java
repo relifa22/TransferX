@@ -87,6 +87,7 @@ public class CardResponseDto {
         this.expirationDate = expirationDate;
     }
 
+    @JsonProperty("isActive")
     public boolean isActive() {
         return isActive;
     }

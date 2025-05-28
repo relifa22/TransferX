@@ -2,13 +2,11 @@ package lt.javau12.TransferX.controllers;
 
 import jakarta.validation.Valid;
 import lt.javau12.TransferX.DTO.*;
-import lt.javau12.TransferX.entities.User;
 import lt.javau12.TransferX.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping ("/api/users")
@@ -28,19 +26,22 @@ public class UserController {
         return ResponseEntity.status(201).body(created);
 
     }
+
     // child userio kurimas
     @PostMapping("/child")
-    public ResponseEntity<ChildResponseDto> createchilduser(@Valid @RequestBody CreateChildDto createChildDto){
-        ChildResponseDto created = userService.createChilduser(createChildDto);
+    public ResponseEntity<ChildResponseDto> createChildUser(@Valid @RequestBody CreateChildDto createChildDto){
+        ChildResponseDto created = userService.createChildUser(createChildDto);
         return ResponseEntity.status(201).body(created);
 
     }
+
     //visi useriai
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(){
 
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
     // useris pagal id
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id){
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     //vaikai pagal parent id
-    @GetMapping("/parent/{parentId}/child")
+    @GetMapping("/parent/{parentId}/children")
     public ResponseEntity<List<ChildListDto>> getAllChildByParentId(@PathVariable Long parentId){
         return ResponseEntity.ok(userService.getChildrenByParentId(parentId));
     }
@@ -62,6 +63,17 @@ public class UserController {
                 ?ResponseEntity.noContent().build()
                 :ResponseEntity.notFound().build();
     }
+
+    //trinamas suauges su saskaitom
+    @DeleteMapping("/adult/{id}")
+    public ResponseEntity<Void> deleteAdultById(@PathVariable Long id){
+        boolean deleted = userService.deleteAdultByid(id);
+        return deleted
+                ?ResponseEntity.noContent().build()
+                :ResponseEntity.notFound().build();
+    }
+
+
 
 
 
