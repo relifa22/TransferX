@@ -1,6 +1,8 @@
 package lt.javau12.TransferX.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lt.javau12.TransferX.enums.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,13 +10,17 @@ import java.time.LocalDateTime;
 public class TransactionResponseDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private TransactionType transactionType;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer number;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonFormat(pattern = "MM-dd")
     private LocalDateTime timestamp;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String fullName;
+    private String senderFullName;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String description;
@@ -26,16 +32,27 @@ public class TransactionResponseDto {
 
     }
 
-    public TransactionResponseDto(Integer number,
+    public TransactionResponseDto(TransactionType transactionType,
+                                  Integer number,
                                   LocalDateTime timesamp,
                                   String fullname,
                                   String descriprion,
                                   BigDecimal amount) {
+
+        this.transactionType = transactionType;
         this.number = number;
         this.timestamp = timesamp;
-        this.fullName = fullname;
+        this.senderFullName = fullname;
         this.description = descriprion;
         this.amount = amount;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
     public Integer getNumber() {
@@ -54,12 +71,12 @@ public class TransactionResponseDto {
         this.timestamp = timestamp;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getSenderFullName() {
+        return senderFullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setSenderFullName(String senderFullName) {
+        this.senderFullName = senderFullName;
     }
 
     public String getDescription() {

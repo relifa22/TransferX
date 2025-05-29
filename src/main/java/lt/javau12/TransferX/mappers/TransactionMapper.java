@@ -27,11 +27,14 @@ public class TransactionMapper {
     }
 
     public TransactionResponseDto toResponseDto(Transaction transactionEntity,
-                                                String fullName,
-                                                Integer number){
-        return new TransactionResponseDto(number,
+                                                String senderFullName,
+                                                Integer number,
+                                                TransactionType transactionType){
+
+        return new TransactionResponseDto(transactionType,
+                number,
                 transactionEntity.getTimestamp(),
-                fullName,
+                senderFullName,
                 transactionEntity.getDescription(),
                 transactionEntity.getAmount()
         );
