@@ -20,6 +20,7 @@ public class CardMapper {
                 cardEntity.getCardType(),
                 cardEntity.getCardBrand(),
                 cardEntity.getCardNumber(),
+                cardEntity.getCvv(),
                 cardEntity.getExpirationDate(),
                 cardEntity.isActive()
 

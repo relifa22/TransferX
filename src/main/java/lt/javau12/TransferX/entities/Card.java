@@ -25,7 +25,7 @@ public class Card {
     @Enumerated(EnumType.STRING)
     private CardBrand cardBrand;
 
-    @Column(length = 3)
+    @Column(length = 3, nullable = false)
     private String cvv;
 
     private LocalDate expirationDate;

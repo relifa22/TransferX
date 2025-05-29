@@ -55,6 +55,20 @@ public class UserController {
         return ResponseEntity.ok(userService.getChildrenByParentId(parentId));
     }
 
+    // pilna info apie user
+    @GetMapping("/{userId}/full-info")
+    public ResponseEntity<UserFullInfoDto> getUserFullinfo(@PathVariable Long userId){
+        UserFullInfoDto fullInfoDto = userService.getFullInfoByUserId(userId);
+        return ResponseEntity.ok(fullInfoDto);
+    }
+
+    //pilna info apie visus userius
+    @GetMapping("/full-info")
+    public ResponseEntity<List<UserFullInfoDto>> getAllUsersFullInfo() {
+        return ResponseEntity.ok(userService.getAllUsersFullInfo());
+    }
+
+
     //trinamas vaikas
     @DeleteMapping("/child/{id}")
     public ResponseEntity<Void> deleteChildById(@PathVariable("id") Long childId){
@@ -72,6 +86,11 @@ public class UserController {
                 ?ResponseEntity.noContent().build()
                 :ResponseEntity.notFound().build();
     }
+
+
+
+
+
 
 
 

@@ -113,6 +113,7 @@ public class CardService {
         return cardMapper.toDto(card);
     }
 
+
     public boolean deleteCard(Long id){
         return cardRepository.findById(id)
                 .map(card -> {
@@ -121,6 +122,8 @@ public class CardService {
                 })
                 .orElseThrow(() -> new NotFoundExeption("Card not found by id: " + id));
     }
+
+
 
 
 }

@@ -40,6 +40,10 @@ public class Account {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "account")
+    private List<Card> cards = new ArrayList<>();
+
+
     @OneToMany(mappedBy = "senderAccount")
     private List<Transaction> sentTransactions = new ArrayList<>();
 
@@ -155,5 +159,13 @@ public class Account {
 
     public void setReceivedTransactions(List<Transaction> receivedTransactions) {
         this.receivedTransactions = receivedTransactions;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 }

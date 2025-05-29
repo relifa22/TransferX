@@ -65,7 +65,7 @@ public class AccountService {
                         && account.getAccountType() == AccountType.ADULT)
                 .findFirst()
                 .map(accountMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("default account not found"));
+                .orElseThrow(() -> new NotFoundExeption("default account not found"));
     }
 
     // visu saskaitu gavimas

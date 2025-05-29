@@ -20,7 +20,10 @@ public class CardResponseDto {
     private CardBrand cardBrand;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String maskedCardNumber;
+    private String cardNumber;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String cvv;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate expirationDate;
@@ -35,14 +38,15 @@ public class CardResponseDto {
     public CardResponseDto(Long id,
                            CardType cardType,
                            CardBrand cardBrand,
-                           String maskedCardNumber,
+                           String cardNumber, String cvv,
                            LocalDate expirationDate,
                            boolean isActive) {
 
         this.id = id;
         this.cardType = cardType;
         this.cardBrand = cardBrand;
-        this.maskedCardNumber = maskedCardNumber;
+        this.cvv = cvv;
+        this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.isActive = isActive;
     }
@@ -71,12 +75,20 @@ public class CardResponseDto {
         this.cardBrand = cardBrand;
     }
 
-    public String getMaskedCardNumber() {
-        return maskedCardNumber;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setMaskedCardNumber(String maskedCardNumber) {
-        this.maskedCardNumber = maskedCardNumber;
+    public void setCardNumber(String cardNumber) {
+        cardNumber = cardNumber;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
     }
 
     public LocalDate getExpirationDate() {

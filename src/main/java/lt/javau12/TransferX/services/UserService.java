@@ -9,6 +9,7 @@ import lt.javau12.TransferX.enums.UserType;
 import lt.javau12.TransferX.exeptions.DuplicateEmailException;
 import lt.javau12.TransferX.exeptions.NotFoundExeption;
 import lt.javau12.TransferX.exeptions.ValidationException;
+import lt.javau12.TransferX.mappers.AccountMapper;
 import lt.javau12.TransferX.mappers.CardMapper;
 import lt.javau12.TransferX.mappers.ChildMapper;
 import lt.javau12.TransferX.mappers.UserMapper;
@@ -18,6 +19,7 @@ import lt.javau12.TransferX.repositories.UserRepository;
 import lt.javau12.TransferX.validators.UserValidator;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,7 @@ public class UserService {
     private final CardService cardService;
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
+    private final AccountMapper accountMapper;
 
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
@@ -42,7 +45,7 @@ public class UserService {
                        AccountRepository accountRepository,
                        CardService cardService,
                        CardRepository cardRepository,
-                       CardMapper cardMapper) {
+                       CardMapper cardMapper, AccountMapper accountMapper) {
 
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -53,6 +56,7 @@ public class UserService {
         this.cardService = cardService;
         this.cardRepository = cardRepository;
         this.cardMapper = cardMapper;
+        this.accountMapper = accountMapper;
     }
 
     // sukuriamas naujas vartotojas
@@ -158,7 +162,7 @@ public class UserService {
                         .map(cardMapper::toDto)
                         .toList();
 
-                return new AccountWithCardsDto(account.getIban(), cardDtos);
+                return new AccountWithCardsDto(account.getId(),account.getIban(), account.getBalance(), cardDtos);
             }).toList();
 
             return new ChildListDto(
@@ -175,16 +179,21 @@ public class UserService {
     public boolean deleteChildById(Long childId){
         return userRepository.findById(childId)
                 .flatMap(child -> accountRepository.findFirstByUserId(childId)
-                        .flatMap(account -> cardRepository.findByAccountId(account.getId())
-                                .map(card -> {
-                                    cardRepository.delete(card);
-                                    accountRepository.delete(account);
-                                    userRepository.delete(child);
-                                    return true;
-                                })
+                        .flatMap(account -> {
+                            if (account.getBalance().compareTo(BigDecimal.ZERO) > 0){
+                                throw new ValidationException("Cannot delete acount with remaining balance. Please clear balance first.");
+                            }
+                            return cardRepository.findByAccountId(account.getId())
+                                    .map(card -> {
+                                        cardRepository.delete(card);
+                                        accountRepository.delete(account);
+                                        userRepository.delete(child);
+                                        return true;
+                                    });
+                                }
                         )
                 )
-                .orElse(false);
+                .orElseThrow(()-> new NotFoundExeption("User not found by id: " + childId));
     }
 
     // istrinam suaugusi
@@ -201,6 +210,20 @@ public class UserService {
                     }
 
                     List<Account> accounts = accountRepository.findByUserId(user.getId());
+                    boolean hasBalance = accounts.stream()
+                                    .anyMatch(account -> account.getBalance().compareTo(BigDecimal.ZERO) > 0);
+                    if (hasBalance){
+                        throw new ValidationException("Cannot delete account with remaining balance. Pleace clear your balance first.");
+                    }
+
+                    boolean hasAnyCards = accounts.stream()
+                            .anyMatch(account -> !account.getCards().isEmpty());
+
+                    if (hasAnyCards) {
+                        throw new ValidationException("Cannot delete user: account(s) still have cards. Please remove all cards first.");
+                    }
+
+
                     accountRepository.deleteAll(accounts);
                     userRepository.delete(user);
                     return true;
@@ -209,8 +232,70 @@ public class UserService {
                 .orElseThrow(()-> new NotFoundExeption("User not found by id: " + id));
     }
 
+    public UserFullInfoDto getFullInfoByUserId(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new NotFoundExeption("User not found by userId: " +userId));
+        List<AccountWithCardsDto> accountWithCardsDtos = buildAccountWithCards(user.getId());
+        List<ChildListDto> childrenDto = buildChildrenInfo(user);
 
+        return new UserFullInfoDto(
+                user.getId(),
+                user.getName(),
+                user.getLastName(),
+                user.getEmail(),
+                accountWithCardsDtos,
+                childrenDto
 
+        );
+    }
+
+    private List<AccountWithCardsDto> buildAccountWithCards(Long userId) {
+        List<Account> accounts = accountRepository.findByUserId(userId);
+
+        return accounts.stream()
+                .map(account -> {
+                    Optional<Card> optionalCard = cardRepository.findByAccountId(account.getId());
+
+                    List<CardResponseDto> cardDtos = optionalCard
+                            .map(card -> List.of(cardMapper.toDto(card)))
+                            .orElse(List.of());
+
+                    return new AccountWithCardsDto(account.getId(), account.getIban(),account.getBalance(), cardDtos);
+                })
+                .toList();
+    }
+
+    private List<ChildListDto> buildChildrenInfo(User parent) {
+        if (parent.getUserType() != UserType.ADULT) {
+            return List.of();
+        }
+
+        List<User> children = userRepository.findAllByParentId(parent.getId());
+
+        return children.stream()
+                .map(child -> new ChildListDto(
+                        child.getId(),
+                        child.getName(),
+                        child.getLastName(),
+                        child.getPersonalIdentificationNumber(),
+                        buildAccountWithCards(child.getId())
+                ))
+                .toList();
+    }
+
+    public List<UserFullInfoDto> getAllUsersFullInfo() {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getUserType() == UserType.ADULT)
+                .map(user -> new UserFullInfoDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        buildAccountWithCards(user.getId()),
+                        buildChildrenInfo(user)
+                ))
+                .toList();
+    }
 
 
 
