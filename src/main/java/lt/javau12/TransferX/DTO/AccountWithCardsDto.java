@@ -16,6 +16,7 @@ public class AccountWithCardsDto {
                                String iban,
                                BigDecimal balance,
                                List<CardResponseDto> cardResponseDtoList) {
+
         this.accountId = accountId;
         this.iban = iban;
         this.balance = balance;

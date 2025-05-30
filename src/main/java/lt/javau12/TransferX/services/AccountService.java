@@ -14,6 +14,7 @@ import lt.javau12.TransferX.repositories.UserRepository;
 import lt.javau12.TransferX.validators.UserValidator;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,8 +53,11 @@ public class AccountService {
         account.setCurrencyType(CurrencyType.EUR);
         account.setAccountType(AccountType.ADULT);
         account.setIban(ibanGenerator.generateUniqueIban());
+        //nustatomas pradinis 100 eur balansas, kad galima butu testuoti pavedimus ir atsiskaitymus
+        account.setBalance(BigDecimal.valueOf(100));
 
         Account saved = accountRepository.save(account);
+
         return accountMapper.toDto(saved);
 
     }
@@ -65,7 +69,7 @@ public class AccountService {
                         && account.getAccountType() == AccountType.ADULT)
                 .findFirst()
                 .map(accountMapper::toDto)
-                .orElseThrow(() -> new NotFoundExeption("default account not found"));
+                .orElseThrow(() -> new NotFoundExeption("Default account not found"));
     }
 
     // visu saskaitu gavimas

@@ -68,6 +68,7 @@ public class CardService {
         card.setMonthlySpendingLimit(cardType.getMonthlyLimit());
 
         Card saved = cardRepository.save(card);
+
         return cardMapper.toDto(saved);
 
     }
@@ -110,6 +111,20 @@ public class CardService {
     public CardResponseDto getCardById(Long id){
         Card card = cardRepository.findById(id)
                 .orElseThrow(()-> new NotFoundExeption("Card not found with id: " +id));
+        return cardMapper.toDto(card);
+    }
+
+    public CardResponseDto activateCard(Long cardId){
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(()-> new NotFoundExeption("Card not found"));
+
+        if (card.isActive()){
+            throw new ValidationException("Card is already active");
+        }
+
+        card.setActive(true);
+        cardRepository.save(card);
+
         return cardMapper.toDto(card);
     }
 

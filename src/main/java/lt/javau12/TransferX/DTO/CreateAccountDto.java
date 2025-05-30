@@ -21,6 +21,7 @@ public class CreateAccountDto {
 
     public CreateAccountDto(CurrencyType currencyType,
                             AccountType accountType) {
+
         this.currencyType = currencyType;
         this.accountType = accountType;
 

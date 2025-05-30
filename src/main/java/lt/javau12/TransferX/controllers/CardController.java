@@ -35,6 +35,13 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
+    //Korteles aktyvavimas
+    @PatchMapping("/{cardId}/activate")
+    public ResponseEntity<CardResponseDto> activateCard(@PathVariable Long cardId){
+        CardResponseDto responseDto = cardService.activateCard(cardId);
+        return ResponseEntity.ok(responseDto);
+    }
+
 
     // korteles istrynimas
     @DeleteMapping("/{id}")

@@ -16,7 +16,7 @@ public class TransactionResponseDto {
     private Integer number;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonFormat(pattern = "MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime timestamp;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -66,6 +66,7 @@ public class TransactionService {
                 transactionNumber,
                 TransactionType.EXPENSE
         );
+
         transactionRepository.save(transaction);
 
         String senderFullName = sender.getUser().getName() + " " + sender.getUser().getLastName();

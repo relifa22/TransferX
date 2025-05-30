@@ -175,13 +175,28 @@ public class UserService {
         }).toList();
     }
 
+    public UserDto updateAddress(UpdateAddressDto updateAddressDto){
+        User user = userRepository.findById(updateAddressDto.getUserId())
+                .orElseThrow(() -> new NotFoundExeption("User not found "));
+
+        user.setCountry(updateAddressDto.getCountry());
+        user.setCity(updateAddressDto.getCity());
+        user.setAddress(updateAddressDto.getAddress());
+
+        userRepository.save(user);
+        return userMapper.toDto(user);
+
+
+
+    }
+
     // istrinam vaika su kortelem ir saskaita,
     public boolean deleteChildById(Long childId){
         return userRepository.findById(childId)
                 .flatMap(child -> accountRepository.findFirstByUserId(childId)
                         .flatMap(account -> {
                             if (account.getBalance().compareTo(BigDecimal.ZERO) > 0){
-                                throw new ValidationException("Cannot delete acount with remaining balance. Please clear balance first.");
+                                throw new ValidationException("Cannot delete account with remaining balance. Please clear balance first.");
                             }
                             return cardRepository.findByAccountId(account.getId())
                                     .map(card -> {
@@ -234,7 +249,7 @@ public class UserService {
 
     public UserFullInfoDto getFullInfoByUserId(Long userId){
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new NotFoundExeption("User not found by userId: " +userId));
+                .orElseThrow(()-> new NotFoundExeption("User not found by userId: " + userId));
         List<AccountWithCardsDto> accountWithCardsDtos = buildAccountWithCards(user.getId());
         List<ChildListDto> childrenDto = buildChildrenInfo(user);
 
@@ -260,7 +275,10 @@ public class UserService {
                             .map(card -> List.of(cardMapper.toDto(card)))
                             .orElse(List.of());
 
-                    return new AccountWithCardsDto(account.getId(), account.getIban(),account.getBalance(), cardDtos);
+                    return new AccountWithCardsDto(account.getId(),
+                            account.getIban(),
+                            account.getBalance(),
+                            cardDtos);
                 })
                 .toList();
     }
@@ -296,8 +314,6 @@ public class UserService {
                 ))
                 .toList();
     }
-
-
 
 
 

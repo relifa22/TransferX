@@ -80,7 +80,7 @@ public class CardResponseDto {
     }
 
     public void setCardNumber(String cardNumber) {
-        cardNumber = cardNumber;
+        this.cardNumber = cardNumber;
     }
 
     public String getCvv() {

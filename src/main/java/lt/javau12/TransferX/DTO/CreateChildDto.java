@@ -3,7 +3,7 @@ package lt.javau12.TransferX.DTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import lt.javau12.TransferX.enums.UserType;
+
 
 import java.time.LocalDate;
 

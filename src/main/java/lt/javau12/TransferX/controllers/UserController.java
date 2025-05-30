@@ -68,6 +68,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsersFullInfo());
     }
 
+    @PutMapping("/address")
+    public ResponseEntity<UserDto> updateAddress(@RequestBody UpdateAddressDto updateAddressDto){
+        return ResponseEntity.ok(userService.updateAddress(updateAddressDto));
+    }
+
 
     //trinamas vaikas
     @DeleteMapping("/child/{id}")

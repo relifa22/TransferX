@@ -19,6 +19,7 @@ public class ChildListDto {
                         String lastName,
                         String personalIdentificationNumber,
                         List<AccountWithCardsDto> accountsWithcardsDtoList) {
+
         this.childId = childId;
         this.firstName = firstName;
         this.lastName = lastName;

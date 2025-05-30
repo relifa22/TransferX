@@ -28,7 +28,11 @@ public class AccountResponseDto {
 
     }
 
-    public AccountResponseDto(Long id, String iban, BigDecimal balance, CurrencyType currencyType, AccountType accountType) {
+    public AccountResponseDto(Long id,
+                              String iban,
+                              BigDecimal balance,
+                              CurrencyType currencyType,
+                              AccountType accountType) {
         this.id = id;
         this.iban = iban;
         this.balance = balance;
