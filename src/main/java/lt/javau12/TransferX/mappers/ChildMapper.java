@@ -2,31 +2,31 @@ package lt.javau12.TransferX.mappers;
 
 import lt.javau12.TransferX.DTO.ChildResponseDto;
 import lt.javau12.TransferX.DTO.CreateChildDto;
-import lt.javau12.TransferX.entities.User;
+import lt.javau12.TransferX.entities.Client;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChildMapper {
 
-    public User toEntity(CreateChildDto createChildDto){
-        User childUser = new User();
-        childUser.setName(createChildDto.getName());
-        childUser.setLastName(createChildDto.getLastname());
-        childUser.setBirthDate(createChildDto.getBirthDate());
-        childUser.setPersonalIdentificationNumber(createChildDto.getPersonalIdentificationNumber());
-        return childUser;
+    public Client toEntity(CreateChildDto createChildDto){
+        Client childClient = new Client();
+        childClient.setName(createChildDto.getName());
+        childClient.setLastName(createChildDto.getLastname());
+        childClient.setBirthDate(createChildDto.getBirthDate());
+        childClient.setPersonalIdentificationNumber(createChildDto.getPersonalIdentificationNumber());
+        return childClient;
     }
 
-    public ChildResponseDto toChildDto(User user, String message){
+    public ChildResponseDto toChildDto(Client client, String message){
         return new ChildResponseDto(
-                user.getId(),
-                user.getName(),
-                user.getLastName(),
-                user.getUserType(),
+                client.getId(),
+                client.getName(),
+                client.getLastName(),
+                client.getClientType(),
                 message,
-                user.getCountry(),
-                user.getCity(),
-                user.getAddress()
+                client.getCountry(),
+                client.getCity(),
+                client.getAddress()
         );
 
     }

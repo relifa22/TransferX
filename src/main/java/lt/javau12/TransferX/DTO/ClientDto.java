@@ -2,11 +2,11 @@ package lt.javau12.TransferX.DTO;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.enums.ClientType;
 
 
 
-public class UserDto {
+public class ClientDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
@@ -17,20 +17,20 @@ public class UserDto {
     private String country;
     private String city;
     private String address;
-    private UserType userType;
+    private ClientType clientType;
 
 
-    public UserDto() {
+    public ClientDto() {
     }
 
-    public UserDto(Long id,
-                   String name,
-                   String lastName,
-                   String email,
-                   String country,
-                   String city,
-                   String address,
-                   UserType userType) {
+    public ClientDto(Long id,
+                     String name,
+                     String lastName,
+                     String email,
+                     String country,
+                     String city,
+                     String address,
+                     ClientType clientType) {
 
         this.id = id;
         this.name = name;
@@ -39,7 +39,7 @@ public class UserDto {
         this.country = country;
         this.city = city;
         this.address = address;
-        this.userType = userType;
+        this.clientType = clientType;
 
     }
 
@@ -100,12 +100,12 @@ public class UserDto {
     }
 
 
-    public UserType getUserType() {
-        return userType;
+    public ClientType getClientType() {
+        return clientType;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setClientType(ClientType clientType) {
+        this.clientType = clientType;
     }
 
 

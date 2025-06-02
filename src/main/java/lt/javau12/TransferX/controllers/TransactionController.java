@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 @RestController
 @RequestMapping("/transactions")
@@ -27,8 +26,8 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<TransactionResponseDto>> getHistoy(@RequestParam String iban, @RequestParam String period){
-        return ResponseEntity.ok(transactionService.getHistoryByIbanAndPeiod(iban, period));
+    public ResponseEntity<List<TransactionResponseDto>> getHistory(@RequestParam String iban, @RequestParam String period){
+        return ResponseEntity.ok(transactionService.getHistoryByIbanAndPeriod(iban, period));
 
     }
 }

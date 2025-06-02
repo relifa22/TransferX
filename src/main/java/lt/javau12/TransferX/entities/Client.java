@@ -2,7 +2,7 @@ package lt.javau12.TransferX.entities;
 
 import jakarta.persistence.*;
 import lt.javau12.TransferX.enums.IncomeType;
-import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.enums.ClientType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "clients")
+public class Client {
 
 
     @Id
@@ -42,38 +42,38 @@ public class User {
     private byte[] document;
 
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private ClientType clientType;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private User parent;
+    private Client parent;
 
     private boolean verified;
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Account> accounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "parent")
-    private List<User> children = new ArrayList<>();
+    private List<Client> children = new ArrayList<>();
 
-    public User(){
+    public Client(){
 
     }
 
-    public User(String name,
-                String lastName,
-                String email,
-                String password,
-                LocalDate birthDate,
-                String personalIdentificationNumber,
-                String documentNumber,
-                BigDecimal monthlyIncome,
-                IncomeType incomeType,
-                String country,
-                String city,
-                String address) {
+    public Client(String name,
+                  String lastName,
+                  String email,
+                  String password,
+                  LocalDate birthDate,
+                  String personalIdentificationNumber,
+                  String documentNumber,
+                  BigDecimal monthlyIncome,
+                  IncomeType incomeType,
+                  String country,
+                  String city,
+                  String address) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
@@ -205,19 +205,19 @@ public class User {
         this.document = document;
     }
 
-    public UserType getUserType() {
-        return userType;
+    public ClientType getClientType() {
+        return clientType;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setClientType(ClientType clientType) {
+        this.clientType = clientType;
     }
 
-    public User getParent() {
+    public Client getParent() {
         return parent;
     }
 
-    public void setParent(User parent) {
+    public void setParent(Client parent) {
         this.parent = parent;
     }
 
@@ -237,11 +237,11 @@ public class User {
         this.accounts = accounts;
     }
 
-    public List<User> getChildren() {
+    public List<Client> getChildren() {
         return children;
     }
 
-    public void setChildren(List<User> children) {
+    public void setChildren(List<Client> children) {
         this.children = children;
     }
 

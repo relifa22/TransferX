@@ -4,7 +4,7 @@ import lt.javau12.TransferX.repositories.AccountRepository;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-import java.util.Random;
+
 
 
 @Component

@@ -1,7 +1,7 @@
 package lt.javau12.TransferX.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.enums.ClientType;
 
 public class ChildResponseDto {
 
@@ -10,7 +10,7 @@ public class ChildResponseDto {
 
     private String name;
     private String lastName;
-    private UserType userType;
+    private ClientType clientType;
     private String message;
     private String country;
     private String city;
@@ -23,7 +23,8 @@ public class ChildResponseDto {
     public ChildResponseDto(Long id,
                             String name,
                             String lastName,
-                            UserType userType, String message,
+                            ClientType clientType,
+                            String message,
                             String country,
                             String city,
                             String address) {
@@ -31,7 +32,7 @@ public class ChildResponseDto {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
-        this.userType = userType;
+        this.clientType = clientType;
         this.message = message;
         this.country = country;
         this.city = city;
@@ -62,8 +63,8 @@ public class ChildResponseDto {
         this.lastName = lastName;
     }
 
-    public UserType getUserType() {
-        return userType;
+    public ClientType getClientType() {
+        return clientType;
     }
 
     public String getMessage() {
@@ -74,8 +75,8 @@ public class ChildResponseDto {
         this.message = message;
     }
 
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public void setClientType(ClientType clientType) {
+        this.clientType = clientType;
     }
 
     public String getCountry() {

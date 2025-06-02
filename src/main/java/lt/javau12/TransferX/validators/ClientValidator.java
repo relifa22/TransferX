@@ -1,6 +1,6 @@
 package lt.javau12.TransferX.validators;
 
-import lt.javau12.TransferX.enums.UserType;
+import lt.javau12.TransferX.enums.ClientType;
 import lt.javau12.TransferX.exeptions.ValidationException;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Component
-public class UserValidator {
+public class ClientValidator {
 
     //tikrinama ar asmens kodas ir gimimo data sutampa
     public void doesPersonalCodeMatchBirthday(String personalCode, LocalDate birthDate){
@@ -27,10 +27,6 @@ public class UserValidator {
         String birthMonth = String.format("%02d", birthDate.getMonthValue());
         String birthDay = String.format("%02d", birthDate.getDayOfMonth());
 
-        System.out.println("codeYear: " + codeYear + " vs birthYear: " + birthYear);
-        System.out.println("codeMonth: " + codeMonth + " vs birthMonth: " + birthMonth);
-        System.out.println("codeDate: " + codeDate + " vs birthDay: " + birthDay);
-
         if (!codeYear.equals(birthYear)
                 || !codeMonth.equals(birthMonth)
                 || !codeDate.equals(birthDay)) {
@@ -48,21 +44,21 @@ public class UserValidator {
     }
 
     // userio tipo nustatymas
-    public UserType determineUserType(LocalDate birthDate) {
+    public ClientType determineClientType(LocalDate birthDate) {
         if (birthDate == null) {
             throw new RuntimeException("BirthDate is required");
         }
 
         int age = Period.between(birthDate, LocalDate.now()).getYears();
 
-        if (age < 13) return UserType.CHILD;
-        if (age < 18) return UserType.TEENAGER;
-        return UserType.ADULT;
+        if (age < 13) return ClientType.CHILD;
+        if (age < 18) return ClientType.TEENAGER;
+        return ClientType.ADULT;
     }
-
-    public void validateSelectedTypeAgainstBirthDate(UserType selectedType, LocalDate birthdate){
-        if (selectedType == UserType.ADULT && !isAdult(birthdate)){
-            throw new ValidationException("child cannot have adult account. Please check birthdate or choose other user type.");
+    //patikrinama ar vartotojo ADULT tipas atitinka amziu t.y 18 metu
+    public void validateSelectedTypeAgainstBirthDate(ClientType selectedType, LocalDate birthdate){
+        if (selectedType == ClientType.ADULT && !isAdult(birthdate)){
+            throw new ValidationException("child cannot have adult account. Please check birthdate or choose other client type.");
         }
     }
 

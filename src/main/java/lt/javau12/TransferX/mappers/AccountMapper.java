@@ -44,7 +44,7 @@ public class AccountMapper {
         accountListDto.setIban(account.getIban());
         accountListDto.setCurrencyType(account.getCurrencyType());
         accountListDto.setAccountType(account.getAccountType());
-        accountListDto.setUserId(account.getUser().getId());
+        accountListDto.setClientId(account.getClient().getId());
         return accountListDto;
     }
 

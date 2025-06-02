@@ -1,5 +1,8 @@
 package lt.javau12.TransferX.controllers;
 
+import jakarta.validation.Valid;
+import lt.javau12.TransferX.DTO.AccountLimitDto;
+import lt.javau12.TransferX.DTO.AccountListDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
 import lt.javau12.TransferX.services.AccountService;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +22,14 @@ public class AccountController {
 
     // gaunama automatiskai sukurta saskaita
    @GetMapping("/default/{userId}")
-    public ResponseEntity<AccountResponseDto> getDefaultAccount(@PathVariable Long userId){
-        return ResponseEntity.ok(accountService.getDefaultAccountByUserId(userId));
+    public ResponseEntity<AccountResponseDto> getDefaultAccount(@PathVariable Long clientId){
+        return ResponseEntity.ok(accountService.getDefaultAccountByClientId(clientId));
    }
 
    // rankiniu budu kuriama saskaita
    @PostMapping("/user/{Id}")
-   public ResponseEntity<AccountResponseDto> createAccountForUser(@PathVariable Long userId){
-       AccountResponseDto accountResponseDto = accountService.createAccountForUser(userId);
+   public ResponseEntity<AccountResponseDto> createAccountForUser(@PathVariable Long clientId){
+       AccountResponseDto accountResponseDto = accountService.createAccountForClient(clientId);
        return ResponseEntity.status(201).body(accountResponseDto);
    }
 
@@ -43,9 +46,16 @@ public class AccountController {
 
     // vartotojo saskaitos pagal id
    @GetMapping("/api/accounts/by-user/{userId}")
-    public ResponseEntity<List<AccountResponseDto>> getAllUsersAccountsByUserId(@PathVariable Long userId){
-        List<AccountResponseDto> accounts = accountService.getAccountsByUserId(userId);
+    public ResponseEntity<List<AccountResponseDto>> getAllUsersAccountsByUserId(@PathVariable Long clientId){
+        List<AccountResponseDto> accounts = accountService.getAccountsByClientId(clientId);
         return ResponseEntity.ok(accounts);
+   }
+
+   @PutMapping("/{accountId}/limits")
+    public ResponseEntity<AccountLimitDto> updateTransferlimits(@PathVariable Long accountId,
+                                                                @Valid @RequestBody AccountLimitDto accountLimitDto){
+        AccountLimitDto updatedLimits = accountService.updateAccountLimits(accountId, accountLimitDto);
+        return ResponseEntity.ok(updatedLimits);
    }
 
 

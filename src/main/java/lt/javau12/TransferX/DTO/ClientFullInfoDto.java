@@ -2,7 +2,7 @@ package lt.javau12.TransferX.DTO;
 
 import java.util.List;
 
-public class UserFullInfoDto {
+public class ClientFullInfoDto {
     private Long id;
     private String name;
     private String lastName;
@@ -11,12 +11,12 @@ public class UserFullInfoDto {
     private List<ChildListDto> childListDtos;
 
 
-    public UserFullInfoDto(Long id,
-                           String name,
-                           String lastName,
-                           String email,
-                           List<AccountWithCardsDto> accountWithCardsDtos,
-                           List<ChildListDto> childListDtos) {
+    public ClientFullInfoDto(Long id,
+                             String name,
+                             String lastName,
+                             String email,
+                             List<AccountWithCardsDto> accountWithCardsDtos,
+                             List<ChildListDto> childListDtos) {
 
         this.id = id;
         this.name = name;

@@ -34,8 +34,8 @@ public class Account {
     private boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "client_id")
+    private Client client;
 
 
     private LocalDateTime createdAt;
@@ -129,12 +129,12 @@ public class Account {
         isActive = active;
     }
 
-    public User getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public LocalDateTime getCreatedAt() {

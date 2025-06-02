@@ -8,7 +8,7 @@ public class AccountListDto {
     private String iban;
     private CurrencyType currencyType;
     private AccountType accountType;
-    private Long userId;
+    private Long clientId;
 
     public AccountListDto(){
 
@@ -18,13 +18,13 @@ public class AccountListDto {
                           String iban,
                           CurrencyType currencyType,
                           AccountType accountType,
-                          Long userId) {
+                          Long clientId) {
 
         this.accountId = accountId;
         this.iban = iban;
         this.currencyType = currencyType;
         this.accountType = accountType;
-        this.userId = userId;
+        this.clientId = clientId;
     }
 
     public Long getAccountId() {
@@ -59,11 +59,11 @@ public class AccountListDto {
         this.accountType = accountType;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 }

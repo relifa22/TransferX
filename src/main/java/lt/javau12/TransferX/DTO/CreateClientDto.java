@@ -7,7 +7,7 @@ import lt.javau12.TransferX.enums.IncomeType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class CreateUserDto {
+public class CreateClientDto {
 
     @NotBlank(message = "First name is required")
     private String name;
@@ -51,22 +51,22 @@ public class CreateUserDto {
     private String address;
 
 
-    public CreateUserDto(){
+    public CreateClientDto(){
 
     }
 
-    public CreateUserDto(String name,
-                         String lastName,
-                         String email,
-                         String password,
-                         LocalDate birthDate,
-                         String personalIdentificationNumber,
-                         String documentNumber,
-                         BigDecimal monthlyIncome,
-                         IncomeType incomeType,
-                         String country,
-                         String city,
-                         String address) {
+    public CreateClientDto(String name,
+                           String lastName,
+                           String email,
+                           String password,
+                           LocalDate birthDate,
+                           String personalIdentificationNumber,
+                           String documentNumber,
+                           BigDecimal monthlyIncome,
+                           IncomeType incomeType,
+                           String country,
+                           String city,
+                           String address) {
 
         this.name = name;
         this.lastName = lastName;

@@ -1,6 +1,6 @@
 package lt.javau12.TransferX.enums;
 
-public enum UserType {
+public enum ClientType {
     CHILD,
     TEENAGER,
     ADULT

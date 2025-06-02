@@ -2,7 +2,7 @@ package lt.javau12.TransferX.DTO;
 
 public class UpdateAddressDto {
 
-    private Long userId;
+    private Long clientId;
     private String country;
     private String city;
     private String address;
@@ -11,23 +11,23 @@ public class UpdateAddressDto {
 
     }
 
-    public UpdateAddressDto(Long userId,
+    public UpdateAddressDto(Long clientId,
                             String country,
                             String city,
                             String address) {
 
-        this.userId = userId;
+        this.clientId = clientId;
         this.country = country;
         this.city = city;
         this.address = address;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public String getCountry() {
