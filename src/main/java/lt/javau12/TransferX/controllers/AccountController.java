@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lt.javau12.TransferX.DTO.AccountLimitDto;
 import lt.javau12.TransferX.DTO.AccountListDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
+import lt.javau12.TransferX.DTO.CardCashDepositDto;
 import lt.javau12.TransferX.services.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +22,14 @@ public class AccountController {
     }
 
     // gaunama automatiskai sukurta saskaita
-   @GetMapping("/default/{userId}")
+   @GetMapping("/default/{clientId}")
     public ResponseEntity<AccountResponseDto> getDefaultAccount(@PathVariable Long clientId){
         return ResponseEntity.ok(accountService.getDefaultAccountByClientId(clientId));
    }
 
    // rankiniu budu kuriama saskaita
-   @PostMapping("/user/{Id}")
-   public ResponseEntity<AccountResponseDto> createAccountForUser(@PathVariable Long clientId){
+   @PostMapping("/client/{clientId}")
+   public ResponseEntity<AccountResponseDto> createAccountForClient(@PathVariable Long clientId){
        AccountResponseDto accountResponseDto = accountService.createAccountForClient(clientId);
        return ResponseEntity.status(201).body(accountResponseDto);
    }
@@ -45,17 +46,33 @@ public class AccountController {
    }
 
     // vartotojo saskaitos pagal id
-   @GetMapping("/api/accounts/by-user/{userId}")
-    public ResponseEntity<List<AccountResponseDto>> getAllUsersAccountsByUserId(@PathVariable Long clientId){
+   @GetMapping("/by-client/{clientId}")
+    public ResponseEntity<List<AccountResponseDto>> getAllClientsAccountsByClientId(@PathVariable Long clientId){
         List<AccountResponseDto> accounts = accountService.getAccountsByClientId(clientId);
         return ResponseEntity.ok(accounts);
    }
 
+   //grynūjų įnešimas per kortele
+   @PostMapping("/deposit")
+   public ResponseEntity<AccountResponseDto> depositCashViaCard(@RequestBody CardCashDepositDto cashDepositDto){
+        AccountResponseDto accountResponseDto = accountService.depositCashToAccount(cashDepositDto);
+        return ResponseEntity.ok(accountResponseDto);
+   }
+
+   //limitu nustatymas
    @PutMapping("/{accountId}/limits")
-    public ResponseEntity<AccountLimitDto> updateTransferlimits(@PathVariable Long accountId,
+    public ResponseEntity<AccountLimitDto> updateTransferLimits(@PathVariable Long accountId,
                                                                 @Valid @RequestBody AccountLimitDto accountLimitDto){
         AccountLimitDto updatedLimits = accountService.updateAccountLimits(accountId, accountLimitDto);
         return ResponseEntity.ok(updatedLimits);
+   }
+
+
+   // trinama saskaita neturėjusi transakcijų
+   @DeleteMapping("/{accountId}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long accountId){
+        String resultMessage = accountService.deleteAccountById(accountId);
+        return ResponseEntity.ok(resultMessage);
    }
 
 

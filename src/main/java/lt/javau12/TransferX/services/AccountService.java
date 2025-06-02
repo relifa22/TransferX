@@ -2,7 +2,9 @@ package lt.javau12.TransferX.services;
 
 import lt.javau12.TransferX.DTO.AccountLimitDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
+import lt.javau12.TransferX.DTO.CardCashDepositDto;
 import lt.javau12.TransferX.entities.Account;
+import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.entities.Client;
 import lt.javau12.TransferX.enums.AccountType;
 import lt.javau12.TransferX.enums.CurrencyType;
@@ -12,6 +14,7 @@ import lt.javau12.TransferX.formatters.IbanGenerator;
 import lt.javau12.TransferX.limits.AccountTransferLimits;
 import lt.javau12.TransferX.mappers.AccountMapper;
 import lt.javau12.TransferX.repositories.AccountRepository;
+import lt.javau12.TransferX.repositories.CardRepository;
 import lt.javau12.TransferX.repositories.ClientRepository;
 import lt.javau12.TransferX.validators.ClientValidator;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ public class AccountService {
     private final ClientValidator clientValidator;
     private final CardService cardService;
     private final AccountTransferLimits accountTransferLimits;
+    private final CardRepository cardRepository;
 
 
     public AccountService(AccountRepository accountRepository,
@@ -38,7 +42,8 @@ public class AccountService {
                           IbanGenerator ibanGenerator,
                           ClientValidator clientValidator,
                           CardService cardService,
-                          AccountTransferLimits accountTransferLimits) {
+                          AccountTransferLimits accountTransferLimits,
+                          CardRepository cardRepository) {
 
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
@@ -47,6 +52,7 @@ public class AccountService {
         this.clientValidator = clientValidator;
         this.cardService = cardService;
         this.accountTransferLimits = accountTransferLimits;
+        this.cardRepository = cardRepository;
     }
 
     // automatinis saskaitos kurimas kuriant vartotoja
@@ -58,8 +64,6 @@ public class AccountService {
         account.setCurrencyType(CurrencyType.EUR);
         account.setAccountType(AccountType.ADULT);
         account.setIban(ibanGenerator.generateUniqueIban());
-        //nustatomas pradinis 100 eur balansas, kad galima butu testuoti pavedimus ir atsiskaitymus
-        account.setBalance(BigDecimal.valueOf(100));
 
         account.setDailyTransferLimit(accountTransferLimits.getMaxDailyLimit());
         account.setMonthlyTransferLimit(accountTransferLimits.getMaxMonthlyLimit());
@@ -118,6 +122,7 @@ public class AccountService {
                     account.setClient(client);
                     account.setCurrencyType(CurrencyType.EUR);
                     account.setAccountType(accountType);
+
                     account.setIban(ibanGenerator.generateUniqueIban());
 
                     return accountMapper.toDto(accountRepository.save(account));
@@ -144,5 +149,31 @@ public class AccountService {
                 saved.getDailyTransferLimit(),
                 saved.getMonthlyTransferLimit()
         );
+    }
+
+    public AccountResponseDto depositCashToAccount(CardCashDepositDto cashDepositDto){
+        Card card = cardRepository.findById(cashDepositDto.getCardId())
+                .orElseThrow(() -> new NotFoundExeption("Card not found"));
+
+        Account account = card.getAccount();
+        account.setBalance(account.getBalance().add(cashDepositDto.getAmount()));
+        accountRepository.save(account);
+
+        return accountMapper.toDto(account);
+    }
+
+    public String deleteAccountById(Long accountId){
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ValidationException("Account not found."));
+
+        if (account.getBalance().compareTo(BigDecimal.ZERO) > 0){
+            throw new ValidationException("Cannot delete account. Please clear your balance first.");
+        }
+
+        if (!account.getCards().isEmpty()){
+            throw new ValidationException("Account has active cards. Please close your cards account first.");
+        }
+        accountRepository.delete(account);
+        return "Account was deleted successfully.";
     }
 }

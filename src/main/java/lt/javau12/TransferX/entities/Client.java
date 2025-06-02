@@ -23,16 +23,19 @@ public class Client {
 
     @Column(unique = true)
     private String email;
+
     private String password;
     private LocalDate birthDate;
 
     @Column(unique = true)
     private String personalIdentificationNumber;
+
     private String documentNumber;
     private BigDecimal monthlyIncome;
 
     @Enumerated(EnumType.STRING)
     private IncomeType incomeType;
+
     private String country;
     private String city;
     private String address;

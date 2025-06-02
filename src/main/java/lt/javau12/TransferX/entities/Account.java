@@ -25,6 +25,7 @@ public class Account {
 
     @Column(precision = 19, scale = 4)
     private BigDecimal balance = BigDecimal.ZERO;
+
     private BigDecimal dailyTransferLimit;
     private BigDecimal monthlyTransferLimit;
 

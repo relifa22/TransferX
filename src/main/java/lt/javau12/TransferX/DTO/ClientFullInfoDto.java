@@ -3,6 +3,7 @@ package lt.javau12.TransferX.DTO;
 import java.util.List;
 
 public class ClientFullInfoDto {
+
     private Long id;
     private String name;
     private String lastName;

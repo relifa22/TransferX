@@ -72,8 +72,8 @@ public class ClientController {
         return ResponseEntity.ok(clientService.updateAddress(updateAddressDto));
     }
 
-
-    //trinamas vaikas
+    // Vaiko trynimas leidžiamas tik jei jis neturėjo jokių transakcijų.
+    // Šiuo metu atliekamas galutinis trynimas (hard delete).
     @DeleteMapping("/child/{id}")
     public ResponseEntity<Void> deleteChildById(@PathVariable("id") Long childId){
         boolean childDeleted = clientService.deleteChildById(childId);
@@ -82,7 +82,9 @@ public class ClientController {
                 :ResponseEntity.notFound().build();
     }
 
-    //trinamas suauges su saskaitom
+    // Suaugęs vartotojas gali būti ištrintas tik jei neturėjo transakcijų.
+    // Sąskaitos automatiškai ištrinamos kartu.
+    // Šiuo metu trynimas yra galutinis (hard delete).
     @DeleteMapping("/adult/{id}")
     public ResponseEntity<Void> deleteAdultById(@PathVariable Long id){
         boolean deleted = clientService.deleteAdultById(id);
