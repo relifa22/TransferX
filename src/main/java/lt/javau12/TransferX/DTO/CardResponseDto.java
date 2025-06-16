@@ -31,6 +31,8 @@ public class CardResponseDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean isActive;
 
+    private String ownerFullName;
+
    public CardResponseDto(){
 
    }
@@ -40,7 +42,8 @@ public class CardResponseDto {
                            CardBrand cardBrand,
                            String cardNumber, String cvv,
                            LocalDate expirationDate,
-                           boolean isActive) {
+                           boolean isActive,
+                           String ownerFullName) {
 
         this.id = id;
         this.cardType = cardType;
@@ -49,6 +52,7 @@ public class CardResponseDto {
         this.cardNumber = cardNumber;
         this.expirationDate = expirationDate;
         this.isActive = isActive;
+        this.ownerFullName = ownerFullName;
     }
 
     public Long getId() {
@@ -106,5 +110,13 @@ public class CardResponseDto {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getOwnerFullName() {
+        return ownerFullName;
+    }
+
+    public void setOwnerFullName(String ownerFullName) {
+        this.ownerFullName = ownerFullName;
     }
 }

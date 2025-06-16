@@ -2,13 +2,13 @@ package lt.javau12.TransferX.DTO;
 
 import java.math.BigDecimal;
 
-public class CardCashDepositDto {
+public class CashViaCardDto {
 
     private Long cardId;
     private BigDecimal amount;
 
-    public CardCashDepositDto(Long cardId,
-                              BigDecimal balance) {
+    public CashViaCardDto(Long cardId,
+                          BigDecimal balance) {
 
         this.cardId = cardId;
         this.amount = balance;

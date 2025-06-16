@@ -23,6 +23,7 @@ public class TransactionMapper {
         transaction.setTransactionType(transactionType);
         transaction.setSenderAccount(sender);
         transaction.setReceiverAccount(receiver);
+        transaction.setReceiverBank(transferRequestDto.getReceiverBank());
         return transaction;
     }
 
@@ -31,14 +32,17 @@ public class TransactionMapper {
                                                 Integer number,
                                                 TransactionType transactionType){
 
-        return new TransactionResponseDto(transactionType,
+        return new TransactionResponseDto(
+                transactionType,
                 number,
                 transactionEntity.getTimestamp(),
                 senderFullName,
+                transactionEntity.getSenderAccount().getIban(),
+                transactionEntity.getReceiverAccount().getClient().getName() + " " + transactionEntity.getReceiverAccount().getClient().getLastName(),
+                "TransferX", 
                 transactionEntity.getDescription(),
                 transactionEntity.getAmount()
         );
-
     }
 
 }

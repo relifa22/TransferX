@@ -7,9 +7,8 @@ import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.entities.Client;
 import lt.javau12.TransferX.enums.ClientType;
 import lt.javau12.TransferX.exeptions.DuplicateEmailException;
-import lt.javau12.TransferX.exeptions.NotFoundExeption;
+import lt.javau12.TransferX.exeptions.NotFoundException;
 import lt.javau12.TransferX.exeptions.ValidationException;
-import lt.javau12.TransferX.mappers.AccountMapper;
 import lt.javau12.TransferX.mappers.CardMapper;
 import lt.javau12.TransferX.mappers.ChildMapper;
 import lt.javau12.TransferX.mappers.ClientMapper;
@@ -17,6 +16,7 @@ import lt.javau12.TransferX.repositories.AccountRepository;
 import lt.javau12.TransferX.repositories.CardRepository;
 import lt.javau12.TransferX.repositories.ClientRepository;
 import lt.javau12.TransferX.validators.ClientValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -35,7 +35,8 @@ public class ClientService {
     private final CardService cardService;
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
-    private final AccountMapper accountMapper;
+    private final PasswordEncoder encoder;
+
 
     public ClientService(ClientRepository clientRepository,
                          ClientMapper clientMapper,
@@ -46,7 +47,7 @@ public class ClientService {
                          CardService cardService,
                          CardRepository cardRepository,
                          CardMapper cardMapper,
-                         AccountMapper accountMapper) {
+                         PasswordEncoder encoder) {
 
         this.clientRepository = clientRepository;
         this.clientMapper = clientMapper;
@@ -57,7 +58,7 @@ public class ClientService {
         this.cardService = cardService;
         this.cardRepository = cardRepository;
         this.cardMapper = cardMapper;
-        this.accountMapper = accountMapper;
+        this.encoder = encoder;
     }
 
     // sukuriamas naujas vartotojas
@@ -68,7 +69,7 @@ public class ClientService {
         }
 
         Client client = clientMapper.toEntity(createClientDto);
-        client.setPassword(createClientDto.getPassword());
+        client.setPassword(encoder.encode(createClientDto.getPassword()));
 
         // tikrinam ar gimimo data ir ak sutampa
          clientValidator.doesPersonalCodeMatchBirthday(
@@ -179,7 +180,7 @@ public class ClientService {
     //adreso updat'as
     public ClientDto updateAddress(UpdateAddressDto updateAddressDto){
         Client client = clientRepository.findById(updateAddressDto.getClientId())
-                .orElseThrow(() -> new NotFoundExeption("User not found "));
+                .orElseThrow(() -> new NotFoundException("User not found "));
 
         client.setCountry(updateAddressDto.getCountry());
         client.setCity(updateAddressDto.getCity());
@@ -210,7 +211,7 @@ public class ClientService {
                                 }
                         )
                 )
-                .orElseThrow(()-> new NotFoundExeption("User not found by id: " + childId));
+                .orElseThrow(()-> new NotFoundException("User not found by id: " + childId));
     }
 
 
@@ -231,7 +232,7 @@ public class ClientService {
                     boolean hasBalance = accounts.stream()
                                     .anyMatch(account -> account.getBalance().compareTo(BigDecimal.ZERO) > 0);
                     if (hasBalance){
-                        throw new ValidationException("Cannot delete account with remaining balance. Pleace clear your balance first.");
+                        throw new ValidationException("Cannot delete account with remaining balance. Please clear your balance first.");
                     }
 
                     boolean hasAnyCards = accounts.stream()
@@ -247,13 +248,13 @@ public class ClientService {
                     return true;
                 })
 
-                .orElseThrow(()-> new NotFoundExeption("Client not found by id: " + id));
+                .orElseThrow(()-> new NotFoundException("Client not found by id: " + id));
     }
 
     //pilnam info apie klientą su saskiatom, vaikais kortelem
     public ClientFullInfoDto getFullInfoByClientId(Long clientId){
         Client client = clientRepository.findById(clientId)
-                .orElseThrow(()-> new NotFoundExeption("User not found by clientId: " + clientId));
+                .orElseThrow(()-> new NotFoundException("User not found by clientId: " + clientId));
 
         List<AccountWithCardsDto> accountWithCardsDto = buildAccountWithCards(client.getId());
         List<ChildListDto> childrenDto = buildChildrenInfo(client);
@@ -322,6 +323,8 @@ public class ClientService {
                 ))
                 .toList();
     }
+
+
 
 
 

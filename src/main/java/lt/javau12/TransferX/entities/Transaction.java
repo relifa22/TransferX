@@ -30,6 +30,9 @@ public class Transaction {
     @JoinColumn(name = "sender_account_id")
     private Account senderAccount;
 
+    @Column(length = 100)
+    private String receiverBank;
+
     @ManyToOne
     @JoinColumn(name = "receiver_account_id")
     private Account receiverAccount;
@@ -105,5 +108,13 @@ public class Transaction {
 
     public void setReceiverAccount(Account receiverAccount) {
         this.receiverAccount = receiverAccount;
+    }
+
+    public String getReceiverBank() {
+        return receiverBank;
+    }
+
+    public void setReceiverBank(String receiverBank) {
+        this.receiverBank = receiverBank;
     }
 }

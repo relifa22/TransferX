@@ -7,12 +7,15 @@ import lt.javau12.TransferX.entities.Account;
 import lt.javau12.TransferX.entities.Transaction;
 import lt.javau12.TransferX.enums.TransactionType;
 import lt.javau12.TransferX.exeptions.InvalidTransferException;
-import lt.javau12.TransferX.exeptions.NotFoundExeption;
+import lt.javau12.TransferX.exeptions.NotFoundException;
 import lt.javau12.TransferX.exeptions.SelfTransferException;
+import lt.javau12.TransferX.exeptions.ValidationException;
 import lt.javau12.TransferX.limits.AccountTransferLimits;
 import lt.javau12.TransferX.mappers.TransactionMapper;
 import lt.javau12.TransferX.repositories.AccountRepository;
 import lt.javau12.TransferX.repositories.TransactionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,6 +33,8 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final AccountTransferLimits accountTransferLimits;
 
+    private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
+
     public TransactionService(AccountRepository accountRepository,
                               TransactionRepository transactionRepository,
                               TransactionMapper transactionMapper,
@@ -38,20 +43,24 @@ public class TransactionService {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
-
         this.accountTransferLimits = accountTransferLimits;
     }
 
     @Transactional
     public TransactionResponseDto sendMoney(TransferRequestDto requestDto){
         Account sender = accountRepository.findById(requestDto.getFromAccountId())
-                .orElseThrow(()-> new NotFoundExeption("Sender account not found"));
+                .orElseThrow(()-> new NotFoundException("Sender account not found"));
 
         Account receiver = accountRepository.findByIban(requestDto.getToIban())
-                .orElseThrow(()-> new NotFoundExeption("Receiver account not found"));
+                .orElseThrow(()-> new NotFoundException("Receiver account not found"));
 
         if (sender.getIban().equals(receiver.getIban())) {
             throw new SelfTransferException("Cannot send money to same account");
+        }
+
+        String expectedFullName = receiver.getClient().getName() + " " + receiver.getClient().getLastName();
+        if (!expectedFullName.equalsIgnoreCase(requestDto.getReceiverFullName().trim())){
+            throw new InvalidTransferException("receiver name does not match the IBAN");
         }
 
         if (sender.getBalance().compareTo(requestDto.getAmount()) < 0){
@@ -81,7 +90,12 @@ public class TransactionService {
         String senderFullName = sender.getClient().getName() + " " + sender.getClient().getLastName();
         int transactionCount = transactionRepository.findAllBySenderAccountId(sender.getId()).size();
 
-        return transactionMapper.toResponseDto(transaction, senderFullName, transactionCount +1, TransactionType.EXPENSE );
+        return transactionMapper.toResponseDto(
+                transaction,
+                senderFullName,
+                transactionCount +1,
+                TransactionType.EXPENSE
+        );
 
 
     }
@@ -106,24 +120,26 @@ public class TransactionService {
                 ? sender.getMonthlyTransferLimit()
                 : accountTransferLimits.getMaxMonthlyLimit();
 
-        if (newDailyTotal.compareTo(sender.getDailyTransferLimit()) > 0) {
+        if (newDailyTotal.compareTo(dailyLimit) > 0) {
             throw new InvalidTransferException("Daily transfer limit exceeded.");
         }
 
-        if (newMonthlyTotal.compareTo(sender.getMonthlyTransferLimit()) > 0){
+        if (newMonthlyTotal.compareTo(monthlyLimit) > 0){
             throw new InvalidTransferException("Monthly transfer limit exceeded.");
         }
     }
 
     public List<TransactionResponseDto> getHistoryByIbanAndPeriod(String iban, String period){
         Account account = accountRepository.findByIban(iban)
-                .orElseThrow(()-> new NotFoundExeption("Account not found"));
+                .orElseThrow(()-> new NotFoundException("Account not found"));
+
 
         LocalDateTime fromDate = switch (period){
-            case "Ši diena" -> LocalDate.now().atStartOfDay();
-            case "Savaitė" -> LocalDate.now().minusDays(7).atStartOfDay();
-            case "Mėnuo" -> LocalDate.now().minusMonths(1).atStartOfDay();
-            default -> LocalDateTime.MIN;
+            case "TODAY" -> LocalDate.now().atStartOfDay();
+            case "WEEK" -> LocalDate.now().minusDays(7).atStartOfDay();
+            case "MONTH" -> LocalDate.now().minusMonths(1).atStartOfDay();
+            case "ALL" -> LocalDateTime.of(2025, 5, 1, 0, 0);
+            default -> throw new ValidationException("Unknown period: " + period);
         };
 
         List<Transaction> sent = transactionRepository
@@ -134,6 +150,7 @@ public class TransactionService {
         List<Transaction> all = new ArrayList<>();
         all.addAll(sent);
         all.addAll(received);
+
 
         return all.stream()
                 .sorted(Comparator.comparing(Transaction::getTimestamp).reversed())

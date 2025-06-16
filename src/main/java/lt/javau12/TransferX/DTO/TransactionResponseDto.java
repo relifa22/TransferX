@@ -23,6 +23,15 @@ public class TransactionResponseDto {
     private String senderFullName;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String senderIban;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String receiverFullName;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String receiverBank;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String description;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -34,16 +43,22 @@ public class TransactionResponseDto {
 
     public TransactionResponseDto(TransactionType transactionType,
                                   Integer number,
-                                  LocalDateTime timesamp,
-                                  String fullname,
-                                  String descriprion,
+                                  LocalDateTime timestamp,
+                                  String senderFullName,
+                                  String senderIban,
+                                  String receiverFullName,
+                                  String receiverBank,
+                                  String description,
                                   BigDecimal amount) {
 
         this.transactionType = transactionType;
         this.number = number;
-        this.timestamp = timesamp;
-        this.senderFullName = fullname;
-        this.description = descriprion;
+        this.timestamp = timestamp;
+        this.senderFullName = senderFullName;
+        this.senderIban = senderIban;
+        this.receiverFullName = receiverFullName;
+        this.receiverBank = receiverBank;
+        this.description = description;
         this.amount = amount;
     }
 
@@ -93,5 +108,29 @@ public class TransactionResponseDto {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getSenderIban() {
+        return senderIban;
+    }
+
+    public void setSenderIban(String senderIban) {
+        this.senderIban = senderIban;
+    }
+
+    public String getReceiverFullName() {
+        return receiverFullName;
+    }
+
+    public void setReceiverFullName(String receiverFullName) {
+        this.receiverFullName = receiverFullName;
+    }
+
+    public String getReceiverBank() {
+        return receiverBank;
+    }
+
+    public void setReceiverBank(String receiverBank) {
+        this.receiverBank = receiverBank;
     }
 }

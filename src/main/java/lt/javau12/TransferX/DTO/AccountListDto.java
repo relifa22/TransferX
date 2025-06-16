@@ -27,6 +27,7 @@ public class AccountListDto {
         this.clientId = clientId;
     }
 
+
     public Long getAccountId() {
         return accountId;
     }

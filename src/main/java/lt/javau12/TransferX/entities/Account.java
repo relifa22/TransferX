@@ -55,7 +55,9 @@ public class Account {
 
     }
 
-    public Account(AccountType accountType, CurrencyType currencyType) {
+    public Account(AccountType accountType,
+                   CurrencyType currencyType) {
+
         this.accountType = accountType;
         this.currencyType = currencyType;
     }

@@ -22,7 +22,10 @@ public class CardMapper {
                 cardEntity.getCardNumber(),
                 cardEntity.getCvv(),
                 cardEntity.getExpirationDate(),
-                cardEntity.isActive()
+                cardEntity.isActive(),
+                cardEntity.getAccount().getClient().getName()
+                + " "
+                + cardEntity.getAccount().getClient().getLastName()
 
 
         );

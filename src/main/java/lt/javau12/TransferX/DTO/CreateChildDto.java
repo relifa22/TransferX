@@ -13,7 +13,7 @@ public class CreateChildDto {
     private String name;
 
     @NotBlank(message = "Last name is required")
-    private String lastname;
+    private String lastName;
 
     @PastOrPresent(message = "Birthdate cannot be in the future")
     @NotNull(message = "Birth date is required")
@@ -42,7 +42,7 @@ public class CreateChildDto {
                           Long parentId) {
 
         this.name = name;
-        this.lastname = lastname;
+        this.lastName = lastname;
         this.birthDate = birthDate;
         this.personalIdentificationNumber = personalIdentificationNumber;
         this.documentNumber = documentNumber;
@@ -57,12 +57,12 @@ public class CreateChildDto {
         this.name = name;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
@@ -35,12 +36,27 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardById(id));
     }
 
+
+    @GetMapping("/by-account/{accountId}")
+    public ResponseEntity<CardResponseDto> getCardByAccountId(@PathVariable Long accountId){
+        return ResponseEntity.of(cardService.getCardByAccountId(accountId));
+    }
+
     //Korteles aktyvavimas
     @PatchMapping("/{cardId}/activate")
     public ResponseEntity<CardResponseDto> activateCard(@PathVariable Long cardId){
         CardResponseDto responseDto = cardService.activateCard(cardId);
         return ResponseEntity.ok(responseDto);
     }
+
+    @PatchMapping("/{cardId}/deactivate")
+    public ResponseEntity<Void> deactivateCard(@PathVariable Long cardId) {
+        boolean deactivated = cardService.deactivateCard(cardId);
+        return deactivated
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+    }
+
 
 
     // korteles istrynimas

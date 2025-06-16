@@ -6,7 +6,7 @@ import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.enums.AccountType;
 import lt.javau12.TransferX.enums.CardBrand;
 import lt.javau12.TransferX.enums.CardType;
-import lt.javau12.TransferX.exeptions.NotFoundExeption;
+import lt.javau12.TransferX.exeptions.NotFoundException;
 import lt.javau12.TransferX.exeptions.ValidationException;
 import lt.javau12.TransferX.formatters.CardNumberGenerator;
 import lt.javau12.TransferX.formatters.CvvGenerator;
@@ -49,7 +49,7 @@ public class CardService {
     public CardResponseDto createDefaultCardForChildAccount(Long accountId){
 
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new NotFoundExeption("Account not found with id: " + accountId));
+                .orElseThrow(() -> new NotFoundException("Account not found with id: " + accountId));
 
         CardType cardType = cardValidator.determinecardType(account.getAccountType());
         String cardNumber = cardNumberGenerator.generateUniqeCardNumber();
@@ -75,8 +75,13 @@ public class CardService {
 
     // rankinis korteles sukurimas suaugusiam
     public CardResponseDto createCardForAdult(Long accountId) {
+        Optional<Card> existingCard = cardRepository.findByAccountId(accountId);
+        if (existingCard.isPresent()){
+            throw new ValidationException("kortelė šiai sčskaitai jau sukurta");
+        }
+
         return Optional.ofNullable(accountRepository.findById(accountId)
-                        .orElseThrow(() -> new NotFoundExeption("Account not found with id: " + accountId)))
+                        .orElseThrow(() -> new NotFoundException("Account not found with id: " + accountId)))
                 .filter(acc -> acc.getAccountType() == AccountType.ADULT)
                 .map(account -> {
                     CardType cardType = cardValidator.determinecardType(account.getAccountType());
@@ -87,7 +92,7 @@ public class CardService {
                     Card card = new Card();
                     card.setAccount(account);
                     card.setCardType(cardType);
-                    card.setCardBrand(CardBrand.VISA);
+                    card.setCardBrand(CardBrand.MASTERCARD);
                     card.setCardNumber(cardNumber);
                     card.setCvv(cvv);
                     card.setExpirationDate(expirationDate);
@@ -110,13 +115,19 @@ public class CardService {
 
     public CardResponseDto getCardById(Long id){
         Card card = cardRepository.findById(id)
-                .orElseThrow(()-> new NotFoundExeption("Card not found with id: " +id));
+                .orElseThrow(()-> new NotFoundException("Card not found with id: " +id));
         return cardMapper.toDto(card);
+    }
+
+    // kortele pagal saskaitos id
+    public Optional<CardResponseDto> getCardByAccountId(Long accountId){
+        return cardRepository.findByAccountId(accountId)
+                .map(cardMapper::toDto);
     }
 
     public CardResponseDto activateCard(Long cardId){
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(()-> new NotFoundExeption("Card not found"));
+                .orElseThrow(()-> new NotFoundException("Card not found"));
 
         if (card.isActive()){
             throw new ValidationException("Card is already active");
@@ -128,6 +139,16 @@ public class CardService {
         return cardMapper.toDto(card);
     }
 
+    public boolean deactivateCard(Long cardId) {
+        return cardRepository.findById(cardId)
+                .map(card -> {
+                    card.setActive(false);
+                    cardRepository.save(card);
+                    return true;
+                })
+                .orElse(false);
+    }
+
 
 
     public boolean deleteCard(Long id){
@@ -136,7 +157,7 @@ public class CardService {
                     cardRepository.delete(card);
                     return true;
                 })
-                .orElseThrow(() -> new NotFoundExeption("Card not found by id: " + id));
+                .orElseThrow(() -> new NotFoundException("Card not found by id: " + id));
     }
 
 

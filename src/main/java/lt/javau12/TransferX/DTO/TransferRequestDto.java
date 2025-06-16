@@ -11,6 +11,12 @@ public class TransferRequestDto {
     @NotNull(message = "Sender account ID is required")
     private Long fromAccountId;
 
+    @NotBlank(message = "Receiver full name is required")
+    private String receiverFullName;
+
+    @NotBlank(message = "Receiver bank is required")
+    private String receiverBank;
+
     @NotBlank(message = "Recipient IBAN is required")
     private String toIban;
 
@@ -25,11 +31,15 @@ public class TransferRequestDto {
     }
 
     public TransferRequestDto(Long fromAccountId,
+                              String receiverFullName,
+                              String receiverBank,
                               String toIban,
                               BigDecimal amount,
                               String description) {
 
         this.fromAccountId = fromAccountId;
+        this.receiverFullName = receiverFullName;
+        this.receiverBank = receiverBank;
         this.toIban = toIban;
         this.amount = amount;
         this.description = description;
@@ -41,6 +51,22 @@ public class TransferRequestDto {
 
     public void setFromAccountId(Long fromAccountId) {
         this.fromAccountId = fromAccountId;
+    }
+
+    public String getReceiverFullName() {
+        return receiverFullName;
+    }
+
+    public void setReceiverFullName(String receiverFullName) {
+        this.receiverFullName = receiverFullName;
+    }
+
+    public String getReceiverBank() {
+        return receiverBank;
+    }
+
+    public void setReceiverBank(String receiverBank) {
+        this.receiverBank = receiverBank;
     }
 
     public String getToIban() {

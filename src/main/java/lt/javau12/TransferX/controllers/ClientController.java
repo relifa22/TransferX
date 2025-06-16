@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin
 @RestController
 @RequestMapping ("/api/clients")
 public class ClientController {
@@ -19,7 +19,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    //userio kurimas
+    //kliento kurimas
     @PostMapping
     public ResponseEntity<ClientDto> createClient(@Valid @RequestBody CreateClientDto createClientDto){
         ClientDto created = clientService.createClient(createClientDto);
@@ -27,7 +27,7 @@ public class ClientController {
 
     }
 
-    // child userio kurimas
+    // child kliento kurimas
     @PostMapping("/child")
     public ResponseEntity<ChildResponseDto> createChildClient(@Valid @RequestBody CreateChildDto createChildDto){
         ChildResponseDto created = clientService.createChildClient(createChildDto);
@@ -35,13 +35,13 @@ public class ClientController {
 
     }
 
-    //visi useriai
+    //visi klientai
     @GetMapping
     public ResponseEntity<List<ClientDto>> getAllClients(){
         return ResponseEntity.ok(clientService.getAllClients());
     }
 
-    // useris pagal id
+    // klientas pagal id
     @GetMapping("/{id}")
     public ResponseEntity<ClientDto> getClientById(@PathVariable Long id){
         return ResponseEntity.of(clientService.getClientById(id));
@@ -54,7 +54,7 @@ public class ClientController {
         return ResponseEntity.ok(clientService.getChildrenByParentId(parentId));
     }
 
-    // pilna info apie user
+    // pilna info apie klienta
     @GetMapping("/{clientId}/full-info")
     public ResponseEntity<ClientFullInfoDto> getClientFullInfo(@PathVariable Long clientId){
         ClientFullInfoDto fullInfoDto = clientService.getFullInfoByClientId(clientId);
@@ -67,13 +67,14 @@ public class ClientController {
         return ResponseEntity.ok(clientService.getAllClientsFullInfo());
     }
 
+    //adreso keitimas
     @PutMapping("/address")
     public ResponseEntity<ClientDto> updateAddress(@RequestBody UpdateAddressDto updateAddressDto){
         return ResponseEntity.ok(clientService.updateAddress(updateAddressDto));
     }
 
-    // Vaiko trynimas leidžiamas tik jei jis neturėjo jokių transakcijų.
-    // Šiuo metu atliekamas galutinis trynimas (hard delete).
+    // Vaiko trynimas leidžiamas tik jei jis neturėjo jokių transakcijų
+    // Šiuo metu atliekamas galutinis trynimas - hard delete
     @DeleteMapping("/child/{id}")
     public ResponseEntity<Void> deleteChildById(@PathVariable("id") Long childId){
         boolean childDeleted = clientService.deleteChildById(childId);
@@ -82,9 +83,9 @@ public class ClientController {
                 :ResponseEntity.notFound().build();
     }
 
-    // Suaugęs vartotojas gali būti ištrintas tik jei neturėjo transakcijų.
-    // Sąskaitos automatiškai ištrinamos kartu.
-    // Šiuo metu trynimas yra galutinis (hard delete).
+    // Suaugęs vartotojas gali būti ištrintas tik jei neturėjo transakcijų
+    // Sąskaitos automatiškai ištrinamos kartu
+    // Šiuo metu trynimas yra galutinis - hard delete
     @DeleteMapping("/adult/{id}")
     public ResponseEntity<Void> deleteAdultById(@PathVariable Long id){
         boolean deleted = clientService.deleteAdultById(id);

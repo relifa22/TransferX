@@ -11,7 +11,7 @@ public class ChildMapper {
     public Client toEntity(CreateChildDto createChildDto){
         Client childClient = new Client();
         childClient.setName(createChildDto.getName());
-        childClient.setLastName(createChildDto.getLastname());
+        childClient.setLastName(createChildDto.getLastName());
         childClient.setBirthDate(createChildDto.getBirthDate());
         childClient.setPersonalIdentificationNumber(createChildDto.getPersonalIdentificationNumber());
         return childClient;

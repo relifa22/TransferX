@@ -2,15 +2,15 @@ package lt.javau12.TransferX.controllers;
 
 import jakarta.validation.Valid;
 import lt.javau12.TransferX.DTO.AccountLimitDto;
-import lt.javau12.TransferX.DTO.AccountListDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
-import lt.javau12.TransferX.DTO.CardCashDepositDto;
+import lt.javau12.TransferX.DTO.CashViaCardDto;
 import lt.javau12.TransferX.services.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
@@ -52,11 +52,18 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
    }
 
-   //grynūjų įnešimas per kortele
+   //grynųjų įnešimas per kortele
    @PostMapping("/deposit")
-   public ResponseEntity<AccountResponseDto> depositCashViaCard(@RequestBody CardCashDepositDto cashDepositDto){
+   public ResponseEntity<AccountResponseDto> depositCashViaCard(@RequestBody CashViaCardDto cashDepositDto){
         AccountResponseDto accountResponseDto = accountService.depositCashToAccount(cashDepositDto);
         return ResponseEntity.ok(accountResponseDto);
+   }
+
+   //default limitai
+   @GetMapping("/limits/{accountId}")
+   public ResponseEntity<AccountLimitDto> getDefaultLimits(@PathVariable Long accountId){
+        AccountLimitDto limitDto = accountService.getDefaultAccountLimitsForAdults(accountId);
+        return ResponseEntity.ok(limitDto);
    }
 
    //limitu nustatymas
@@ -66,7 +73,6 @@ public class AccountController {
         AccountLimitDto updatedLimits = accountService.updateAccountLimits(accountId, accountLimitDto);
         return ResponseEntity.ok(updatedLimits);
    }
-
 
    // trinama saskaita neturėjusi transakcijų
    @DeleteMapping("/{accountId}")

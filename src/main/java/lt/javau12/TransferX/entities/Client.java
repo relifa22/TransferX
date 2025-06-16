@@ -40,10 +40,6 @@ public class Client {
     private String city;
     private String address;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] document;
-
     @Enumerated(EnumType.STRING)
     private ClientType clientType;
 
@@ -77,6 +73,7 @@ public class Client {
                   String country,
                   String city,
                   String address) {
+
         this.name = name;
         this.lastName = lastName;
         this.email = email;
@@ -198,14 +195,6 @@ public class Client {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public byte[] getDocument() {
-        return document;
-    }
-
-    public void setDocument(byte[] document) {
-        this.document = document;
     }
 
     public ClientType getClientType() {

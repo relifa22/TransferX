@@ -2,13 +2,14 @@ package lt.javau12.TransferX.services;
 
 import lt.javau12.TransferX.DTO.AccountLimitDto;
 import lt.javau12.TransferX.DTO.AccountResponseDto;
-import lt.javau12.TransferX.DTO.CardCashDepositDto;
+import lt.javau12.TransferX.DTO.CashViaCardDto;
 import lt.javau12.TransferX.entities.Account;
 import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.entities.Client;
 import lt.javau12.TransferX.enums.AccountType;
+import lt.javau12.TransferX.enums.ClientType;
 import lt.javau12.TransferX.enums.CurrencyType;
-import lt.javau12.TransferX.exeptions.NotFoundExeption;
+import lt.javau12.TransferX.exeptions.NotFoundException;
 import lt.javau12.TransferX.exeptions.ValidationException;
 import lt.javau12.TransferX.formatters.IbanGenerator;
 import lt.javau12.TransferX.limits.AccountTransferLimits;
@@ -20,6 +21,7 @@ import lt.javau12.TransferX.validators.ClientValidator;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,9 +81,10 @@ public class AccountService {
         return accountRepository.findByClientId(clientId).stream()
                 .filter(account -> account.getCurrencyType() == CurrencyType.EUR
                         && account.getAccountType() == AccountType.ADULT)
+                .sorted(Comparator.comparingLong(Account::getId))
                 .findFirst()
                 .map(accountMapper::toDto)
-                .orElseThrow(() -> new NotFoundExeption("Default account not found"));
+                .orElseThrow(() -> new NotFoundException("Default account not found"));
     }
 
     // visu saskaitu gavimas
@@ -127,13 +130,30 @@ public class AccountService {
 
                     return accountMapper.toDto(accountRepository.save(account));
                 })
-                .orElseThrow(() -> new ValidationException("User not found or missing user type"));
+                .orElseThrow(() -> new ValidationException("Client not found or missing user type"));
 
     }
 
+    public AccountLimitDto getDefaultAccountLimitsForAdults(Long accountId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundException("Account not found by id: " + accountId));
+
+        Client client = account.getClient();
+        if (client.getClientType() != ClientType.ADULT) {
+            throw new ValidationException("Transfer limits are only applicable to adult clients.");
+        }
+
+        return new AccountLimitDto(
+                account.getId(),
+                new BigDecimal("500.00"),
+                new BigDecimal("5000.00")
+        );
+    }
+
+
     public AccountLimitDto updateAccountLimits(Long accountId, AccountLimitDto accountLimitDto){
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new NotFoundExeption("Account not found"));
+                .orElseThrow(() -> new NotFoundException("Account not found"));
 
         if (accountLimitDto.getTransferDailyLimit().compareTo(accountTransferLimits.getMaxDailyLimit()) > 0 ||
         accountLimitDto.getTransferMonthlyLimit().compareTo(accountTransferLimits.getMaxMonthlyLimit()) > 0){
@@ -146,14 +166,17 @@ public class AccountService {
         Account saved = accountRepository.save(account);
 
         return new AccountLimitDto(
+                saved.getId(),
                 saved.getDailyTransferLimit(),
                 saved.getMonthlyTransferLimit()
         );
     }
 
-    public AccountResponseDto depositCashToAccount(CardCashDepositDto cashDepositDto){
+
+    // grynuju inesimas siuo metu fiktyvus,tik tam kad testuoti pavedimus tarp saskaitu, bet nera itrauktas i transaction history
+    public AccountResponseDto depositCashToAccount(CashViaCardDto cashDepositDto){
         Card card = cardRepository.findById(cashDepositDto.getCardId())
-                .orElseThrow(() -> new NotFoundExeption("Card not found"));
+                .orElseThrow(() -> new NotFoundException("Card not found"));
 
         Account account = card.getAccount();
         account.setBalance(account.getBalance().add(cashDepositDto.getAmount()));
@@ -170,7 +193,7 @@ public class AccountService {
             throw new ValidationException("Cannot delete account. Please clear your balance first.");
         }
 
-        if (!account.getCards().isEmpty()){
+        if (!account.getCards().stream().anyMatch(Card::isActive)){
             throw new ValidationException("Account has active cards. Please close your cards account first.");
         }
         accountRepository.delete(account);
