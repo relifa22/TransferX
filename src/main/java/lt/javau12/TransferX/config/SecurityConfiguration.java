@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -47,9 +47,19 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/clients").permitAll()
+
+                        // Swagger leidimai
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+
+                        // API apsauga pagal roles
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/api/customer/**").hasAnyRole("CUSTOMER", "MANAGER", "ADMIN")
+                        .requestMatchers("/api/customer/**").hasAnyRole("CUSTOMER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -58,6 +68,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
-
 }
+
+
+
