@@ -9,6 +9,9 @@ import lt.javau12.TransferX.mappers.AccountMapper;
 import lt.javau12.TransferX.mappers.ClientMapper;
 import lt.javau12.TransferX.repositories.AccountRepository;
 import lt.javau12.TransferX.repositories.ClientRepository;
+import lt.javau12.TransferX.security.JwtUtils;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,18 +23,24 @@ public class AuthService {
     private final PasswordEncoder encoder;
     private final ClientMapper clientMapper;
     private final AccountMapper accountMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
     public AuthService(ClientRepository clientRepository,
                        AccountRepository accountRepository,
                        PasswordEncoder encoder,
                        ClientMapper clientMapper,
-                       AccountMapper accountMapper) {
+                       AccountMapper accountMapper,
+                       AuthenticationManager authenticationManager,
+                       JwtUtils jwtUtils) {
 
         this.clientRepository = clientRepository;
         this.accountRepository = accountRepository;
         this.encoder = encoder;
         this.clientMapper = clientMapper;
         this.accountMapper = accountMapper;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     public LoginResponseDto login(LoginDto loginDto){
@@ -51,6 +60,8 @@ public class AuthService {
         );
     }
     public LoginWithAccountDto loginWithAccount(LoginDto loginDto){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken( loginDto.getEmail(), loginDto.getPassword()));
+
         Client client = clientRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(() -> new NotFoundException("client not found by email."));
 
@@ -61,10 +72,12 @@ public class AuthService {
         Account account = accountRepository.findDefaultAccountByClientId(client.getId())
                 .orElseThrow(() -> new NotFoundException("account not found"));
 
+        String jwt = jwtUtils.generateToken(client.getEmail());
+
         ClientDto clientDto = clientMapper.toDto(client);
         AccountResponseDto accountResponseDto = accountMapper.toDto(account);
 
-        return new LoginWithAccountDto(clientDto, accountResponseDto);
+        return new LoginWithAccountDto(jwt, clientDto, accountResponseDto);
     }
 
 

@@ -6,6 +6,7 @@ import lt.javau12.TransferX.entities.Account;
 import lt.javau12.TransferX.entities.Card;
 import lt.javau12.TransferX.entities.Client;
 import lt.javau12.TransferX.enums.ClientType;
+import lt.javau12.TransferX.enums.Role;
 import lt.javau12.TransferX.exeptions.DuplicateEmailException;
 import lt.javau12.TransferX.exeptions.NotFoundException;
 import lt.javau12.TransferX.exeptions.ValidationException;
@@ -38,6 +39,7 @@ public class ClientService {
     private final PasswordEncoder encoder;
 
 
+
     public ClientService(ClientRepository clientRepository,
                          ClientMapper clientMapper,
                          AccountService accountService,
@@ -59,6 +61,7 @@ public class ClientService {
         this.cardRepository = cardRepository;
         this.cardMapper = cardMapper;
         this.encoder = encoder;
+
     }
 
     // sukuriamas naujas vartotojas
@@ -69,6 +72,7 @@ public class ClientService {
         }
 
         Client client = clientMapper.toEntity(createClientDto);
+        client.setRole(Role.CUSTOMER); // priskiriama role
         client.setPassword(encoder.encode(createClientDto.getPassword()));
 
         // tikrinam ar gimimo data ir ak sutampa
@@ -82,6 +86,7 @@ public class ClientService {
         if (client.getClientType() != ClientType.ADULT){
             throw new ValidationException("Only adult users can register");
         }
+        client.setVerified(true);
 
         Client savedClient = clientRepository.save(client);
 
@@ -103,6 +108,8 @@ public class ClientService {
                 .orElseThrow(() -> new ValidationException("Parent not found"));
 
         Client child = childMapper.toEntity(createChildDto);
+        child.setRole(Role.CUSTOMER); // priskiriama role
+        child.setVerified(true);
 
         clientValidator.doesPersonalCodeMatchBirthday(child.getPersonalIdentificationNumber(),
                 child.getBirthDate()
@@ -251,7 +258,7 @@ public class ClientService {
                 .orElseThrow(()-> new NotFoundException("Client not found by id: " + id));
     }
 
-    //pilnam info apie klientą su saskiatom, vaikais kortelem
+    //pilnam info apie klientą su saskaitom, vaikais kortelem
     public ClientFullInfoDto getFullInfoByClientId(Long clientId){
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(()-> new NotFoundException("User not found by clientId: " + clientId));

@@ -5,6 +5,7 @@ import lt.javau12.TransferX.DTO.TransactionResponseDto;
 import lt.javau12.TransferX.DTO.TransferRequestDto;
 import lt.javau12.TransferX.services.TransactionService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +21,14 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/send")
     public ResponseEntity<TransactionResponseDto> sendMoney( @Valid @RequestBody TransferRequestDto request){
         TransactionResponseDto responseDto = transactionService.sendMoney(request);
         return ResponseEntity.status(201).body(responseDto);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN')")
     @GetMapping("/history")
     public ResponseEntity<List<TransactionResponseDto>> getHistory(@RequestParam String iban, @RequestParam String period){
         return ResponseEntity.ok(transactionService.getHistoryByIbanAndPeriod(iban, period));

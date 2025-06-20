@@ -3,6 +3,7 @@ package lt.javau12.TransferX.entities;
 import jakarta.persistence.*;
 import lt.javau12.TransferX.enums.IncomeType;
 import lt.javau12.TransferX.enums.ClientType;
+import lt.javau12.TransferX.enums.Role;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -42,6 +43,10 @@ public class Client {
 
     @Enumerated(EnumType.STRING)
     private ClientType clientType;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
@@ -245,5 +250,11 @@ public class Client {
         this.createdAt = createdAt;
     }
 
+    public Role getRole() {
+        return role;
+    }
 
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

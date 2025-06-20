@@ -60,7 +60,6 @@ public class AccountService {
     // automatinis saskaitos kurimas kuriant vartotoja
     public AccountResponseDto createDefaultAccountForClient(Client client) {
 
-
         Account account = new Account();
         account.setClient(client);
         account.setCurrencyType(CurrencyType.EUR);
@@ -173,7 +172,7 @@ public class AccountService {
     }
 
 
-    // grynuju inesimas siuo metu fiktyvus,tik tam kad testuoti pavedimus tarp saskaitu, bet nera itrauktas i transaction history
+    // grynuju inesimas siuo metu fiktyvus,tik tam,kad testuoti pavedimus tarp saskaitu, bet nera itrauktas i transaction history
     public AccountResponseDto depositCashToAccount(CashViaCardDto cashDepositDto){
         Card card = cardRepository.findById(cashDepositDto.getCardId())
                 .orElseThrow(() -> new NotFoundException("Card not found"));
