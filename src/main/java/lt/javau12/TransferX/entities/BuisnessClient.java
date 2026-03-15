@@ -1,10 +1,9 @@
 package lt.javau12.TransferX.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 
 @Entity
-public class BuissnessClient {
+public class BuisnessClient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
