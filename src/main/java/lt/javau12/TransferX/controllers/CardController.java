@@ -53,6 +53,7 @@ public class CardController {
         CardResponseDto responseDto = cardService.activateCard(cardId);
         return ResponseEntity.ok(responseDto);
     }
+
     @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN')")
     @PatchMapping("/{cardId}/deactivate")
     public ResponseEntity<Void> deactivateCard(@PathVariable Long cardId) {

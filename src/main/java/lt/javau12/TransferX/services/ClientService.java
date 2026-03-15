@@ -108,7 +108,7 @@ public class ClientService {
                 .orElseThrow(() -> new ValidationException("Parent not found"));
 
         Client child = childMapper.toEntity(createChildDto);
-        child.setRole(Role.CUSTOMER); // priskiriama role
+        child.setRole(Role.CUSTOMER);
         child.setVerified(true);
 
         clientValidator.doesPersonalCodeMatchBirthday(child.getPersonalIdentificationNumber(),

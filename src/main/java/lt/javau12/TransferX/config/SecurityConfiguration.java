@@ -18,7 +18,7 @@ import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity // Leidžia naudoti @PreAuthorize ir kitus metodų lygio apsaugos mechanizmus
 public class SecurityConfiguration {
 
     private final JwtRequestFilter jwtRequestFilter;
@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                                 "/webjars/**"
                         ).permitAll()
 
-                        // API apsauga pagal roles
+
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/customer/**").hasAnyRole("CUSTOMER", "ADMIN")
 

@@ -22,6 +22,7 @@ public class Client {
     private String name;
     private String lastName;
 
+    //užtikrinam, kad el. paštas būtų unikalus visoje sistemoje
     @Column(unique = true)
     private String email;
 
